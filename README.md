@@ -1,2 +1,3 @@
 # CS-Notes
-学习计算机笔记
+
+![JavaScript](https://img.shields.io/badge/language-JavaScript-yellow.svg?style=plastic)
