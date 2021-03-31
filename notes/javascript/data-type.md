@@ -59,7 +59,7 @@
 
 - Object.prototype.toString.call()
 
-  返回统一字符串格式为 "[object Xxx]" ，而这里字符串里面的 "Xxx" ，第一个首字母要大写
+  返回统一字符串格式为 "[object Xxx]" ，而这里字符串里面的 "Xxx" ，**第一个首字母要大写**
 
   ```javascript
     Object.prototype.toString({})       // "[object Object]"
@@ -87,5 +87,20 @@
     Object.prototype.toString.call(document)  //"[object HTMLDocument]"
 
     Object.prototype.toString.call(window)   //"[object Window]"
+
+  ```
+
+## 实现一个全局通用的数据类型判断方法
+
+  ```javascript
+    function getType(obj) {
+      const type = typeof obj;
+      if (type !== 'object') {
+        // 先进行typeof判断，如果是基础数据类型，直接返回
+        return type;
+      }
+      // 对于typeof返回结果是object的，再进行如下的判断，正则返回结果
+      return Object.prototype.toString.call(obj).replace(/^\[object (\S+)\]$/, '$1'); // 注意正则中间有个空格
+    }
 
   ```
