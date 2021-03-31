@@ -32,6 +32,30 @@
   原理：
       先用typeof来判断基础数据类型，如果是，直接返回false
       通过Object.getPrototypeOf拿到参数的原型对象，如果参数的原型对象为null返回fasle，如果参数的原型对象全等与目标对象的原型返回true，否则，获取下一个参数的原型对象的哪一个原型，然后执行一样的判断
+  
+  手写实现 instanceof:
+
+  ```javascript
+    function myInstance(left, right) {
+      // 过滤基本数据类型
+      if (typeof left !== 'object' || left === null) {
+        return false;
+      }
+      // getProtypeOf是Object对象自带的API，能够拿到参数的原型对象
+      let proto = Object.getPrototypeOf(left);
+      while (true) {
+        //循环往下寻找，直到找到相同的原型对象
+        if (proto === null) {
+          return false;
+        }
+        if (proto === right.prototype) {
+          //找到相同原型对象，返回true
+          return true;
+        }
+        proto = Object.getPrototypeOf(proto);
+      }
+    }
+  ```
 
 - Object.prototype.toString.call()
 
