@@ -5,7 +5,7 @@
 ## JS基础
 
 - [数据类型](https://github.com/Buzhifanji/CS-Notes/blob/main/notes/javascript/base/data-type.md)
-- [数据拷贝](https://github.com/Buzhifanji/CS-Notes/blob/main/notes/javascript/base/copy-type.md)
+- [数据拷贝](https://github.com/Buzhifanji/CS-Notes/blob/main/notes/javascript/base/data-copy.md)
 
 
 ![离散数学](https://img.shields.io/badge/Math-离散数学-bule.svg?style=plastic)
