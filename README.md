@@ -2,7 +2,11 @@
 
 ![javascript](https://img.shields.io/badge/language-JavaScript-yellow.svg?style=plastic)
 
-- [数据类型](https://github.com/Buzhifanji/CS-Notes/blob/main/notes/javascript/data-type.md)
+## JS基础
+
+- [数据类型](https://github.com/Buzhifanji/CS-Notes/blob/main/notes/javascript/base/data-type.md)
+- [数据拷贝](https://github.com/Buzhifanji/CS-Notes/blob/main/notes/javascript/base/copy-type.md)
+
 
 ![离散数学](https://img.shields.io/badge/Math-离散数学-bule.svg?style=plastic)
 
