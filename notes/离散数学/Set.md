@@ -142,6 +142,12 @@ eg: 设 E = {x|x(x - 1)(x - 2)(x - 3), x ∈ R}, F = {x|x ∈ Z⁺, x² < 12},
 
 ### [并运算](#并运算)
 
-设 A，B 是两个集合，则集合 A 与 B 的**并集**定义为：A Ｕ B = {x|x ∈ A或 x ∈ B}
+设 A，B 是两个集合，则集合 A 与 B 的**并集**定义为：A ∪ B = {x|x ∈ A 或 x ∈ B}
 
 ![并集](https://github.com/Buzhifanji/CS-Notes/blob/main/assets/javascript/image/set-union.png)
+
+### [交运算](#交运算)
+
+设 A，B 是两个集合，则集合 A 与 B 的**交集**定义为：A ∩ B = {x|x ∈ A 并且 x ∈ B}
+
+![交集](https://github.com/Buzhifanji/CS-Notes/blob/main/assets/javascript/image/set-intersection.png)
