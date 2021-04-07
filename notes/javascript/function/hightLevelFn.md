@@ -10,7 +10,7 @@
 
 ## 函数可以存储在变量中
 
-  ```javascript
+ ```javascript
     let fn = function() {}
 
     fn()
@@ -20,13 +20,13 @@
             return 'name'
         }
     }
- ```
+```
 
 ## 函数作为参数(回调函数)
 
 模拟filter
 
-    ```javascript
+  ```javascript
         function filter(arr, fn) {
 
             const result = []
@@ -44,13 +44,13 @@
         })
         console.log(ary)
 
-    ```
+  ```
 
 ## 函数作为返回值(闭包)
 
 实现只能调用一次的函数
 
-    ```javascript
+  ```javascript
     function once(fn) {
         let done = false
         debugger
@@ -67,7 +67,7 @@
     pay(5)
     pay(5)
     pay(5)
-    ```
+  ```
 浏览器环境中闭包
 
 ![闭包](https://github.com/Buzhifanji/CS-Notes/blob/main/assets/javascript/image/closure.png)
