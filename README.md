@@ -6,6 +6,7 @@
 
 - [数据类型](https://github.com/Buzhifanji/CS-Notes/blob/main/notes/javascript/base/data-type.md)
 - [数据拷贝](https://github.com/Buzhifanji/CS-Notes/blob/main/notes/javascript/base/data-copy.md)
+- [高阶函数](https://github.com/Buzhifanji/CS-Notes/blob/main/notes/javascript/function/hightLevelFn.md))
 
 ## vue
 
