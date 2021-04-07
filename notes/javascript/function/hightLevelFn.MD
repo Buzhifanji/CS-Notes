@@ -10,8 +10,7 @@
 
 ## 函数可以存储在变量中
 
-```javascript
-
+  ```javascript
     let fn = function() {}
 
     fn()
@@ -21,7 +20,7 @@
             return 'name'
         }
     }
-```
+ ```
 
 ## 函数作为参数(回调函数)
 
