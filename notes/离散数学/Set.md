@@ -151,3 +151,21 @@ eg: 设 E = {x|x(x - 1)(x - 2)(x - 3), x ∈ R}, F = {x|x ∈ Z⁺, x² < 12},
 设 A，B 是两个集合，则集合 A 与 B 的**交集**定义为：A ∩ B = {x|x ∈ A 并且 x ∈ B}
 
 ![交集](https://github.com/Buzhifanji/CS-Notes/blob/main/assets/javascript/image/set-intersection.png)
+
+### [补运算](#补运算)
+
+设 U 是全集，则集合 A 的**补集**定义为：Ā = {x|x ∉ A}
+
+![交集](https://github.com/Buzhifanji/CS-Notes/blob/main/assets/javascript/image/set-plementary.png)
+
+### [差运算](#差运算)
+
+设 A，B 是两个集合，则集合 A 与 B 的**差集**定义为：A - B = {x|x ∈ A 并且 x ∉ B}
+
+![交集](https://github.com/Buzhifanji/CS-Notes/blob/main/assets/javascript/image/set-except.png)
+
+### [对称差运算](#对称差运算)
+
+设 A，B 是两个集合，则集合 A 与 B 的**对称差集**定义为：A ⨁ B = {x|(x ∈ A 并且 x ∉ B)或者(x ∉ A并且 x ∈ B)}
+
+![对称差](https://github.com/Buzhifanji/CS-Notes/blob/main/assets/javascript/image/set-sysmmetric-difference.png)
