@@ -169,3 +169,27 @@ eg: 设 E = {x|x(x - 1)(x - 2)(x - 3), x ∈ R}, F = {x|x ∈ Z⁺, x² < 12},
 设 A，B 是两个集合，则集合 A 与 B 的**对称差集**定义为：A ⨁ B = {x|(x ∈ A 并且 x ∉ B)或者(x ∉ A并且 x ∈ B)}
 
 ![对称差](https://github.com/Buzhifanji/CS-Notes/blob/main/assets/javascript/image/set-sysmmetric-difference.png)
+
+## 集合的运算定律
+
+设 U 为全集，A, B, C为任何集合
+
+- 幂等律 eg: A ∪ A = A, A ∩ A = A
+
+- 交换律 eg: A ∪ B = B ∪ A, A ∩ B = B ∩ A
+
+- 结合律 eg: A ∪ (B ∪ C) = (A ∪ B) ∪ C, A ∩ (B ∩ C) = (A ∩ B) ∩ Cs
+
+- 同一律 eg: A ∪ ∅ = A, A ∩ U = A
+
+- 零律   eg: A ∪ U = U, A ∩ ∅ = A
+
+- 分配律 eg: A ∪ (B ∩ C) = (A ∪ B) ∩ (A ∪ C), A ∩ (B ∪ C) = (A ∩ B) ∪ (A ∩ C) 
+
+- 吸收律 eg: A ∪ (A ∩ B) = A, A ∩ (A ∪ B) = A
+
+- 矛盾律和排中律 eg: Ā ∩ A = ∅, Ā ∪ A = U
+
+- 双重否定律 eg: A 双重否定 等于 A
+
+- 德摩根律  eg: 
