@@ -5,6 +5,7 @@
     - [1.2.1 函子(Functor)](#121-函子functor)
       - [MayBe 函子](#maybe-函子)
       - [Either 函子](#either-函子)
+      - [IO函子](#io函子)
   - [1.3 柯里化](#13-柯里化)
   - [1.4 函数组合](#14-函数组合)
 
@@ -176,6 +177,46 @@ Either 两者中的任何一个，类似于if...else...的处理
   let result4 = parseJSON('{ "name": "zs" }');
   console.log(result3);
   console.log(result4);
+```
+
+#### IO函子
+
+IO函子中的_value 是一个函数，这里是把函数作为值来处理
+
+IO 函子可以把不纯的动作存储到_value 中，延迟执行这个不纯的操作（惰性执行），包装当前操作纯
+
+把不纯的操作交给调用者来处理
+
+```javascript
+  // 函数组合
+  function compose(...args) {
+    return function(value) {
+      // 先翻转数组，然后通过reduce依次执行函数
+      return args.reverse().reduce(function(acc, fn) {
+        return fn(acc);
+      }, value);
+    };
+  }
+
+  // IO 函子
+  class IO {
+    static of(value) {
+      return new IO(function() {
+        return value;
+      });
+    }
+    constructor(fn) {
+      this._value = fn;
+    }
+    map(fn) {
+      // 把当前的 value 和传入的 fn 组合成一个新的函数
+      return new IO(compose(fn, this._value));
+    }
+  }
+
+  // test
+  const result = IO.of(process).map((p) => p.execPath);
+  console.log(result._value());
 ```
 
 
