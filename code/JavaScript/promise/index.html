@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // var promise = new Promise((resolve, reject) => {
+        //     resolve(100)
+        // })
+        // var p1 = promise.then(function(value) {
+        //     console.log(value)
+        //     return p1
+        // })
+        setTimeout(() => console.log('A'), 0)
+        setTimeout(() => console.log('B'), 1000)
+        Promise.resolve().then(() => {
+            setTimeout(() => console.log('C'), 0)
+            setTimeout(() => console.log('D'), 1000)
+            console.log('E');
+            Promise.resolve().then(() => console.log('F'))
+        }).then(() => console.log('G'))
+
+        setTimeout(() => console.log('H'), 0)
+        setTimeout(() => console.log('I'), 1000)
+        // 微任务 本轮的末尾执行
+
+        // 同构 既能在Node环境中执行也能在Browser环境执行
+    </script>
+</body>
+</html>
