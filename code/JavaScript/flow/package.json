@@ -4,6 +4,12 @@
   "main": "index.js",
   "license": "MIT",
   "devDependencies": {
+    "@babel/cli": "^7.13.14",
+    "@babel/core": "^7.13.15",
+    "@babel/preset-flow": "^7.13.13",
     "flow-bin": "^0.149.0"
+  },
+  "dependencies": {
+    "flow-remove-types": "^2.149.0"
   }
 }

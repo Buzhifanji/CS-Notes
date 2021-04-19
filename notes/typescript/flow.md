@@ -28,4 +28,13 @@ JavaScript的类型检查器
 
 ## 编译移除注解
 
-1. 
+- flow-remove-types 模块
+  
+  安装：yarn add flow-remove-types --dev
+  使用命令： yarn flow-remove-types . -d dist
+
+- babel
+
+  安装：yarn add @babel/core @babel/cli @babel/preset-flow --dev
+  新建 .babelrc 文件，并添加 {"presets": ["@babel/preset-flow"]}
+  使用命令： yarn babel src -d dist
