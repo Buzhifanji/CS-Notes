@@ -3,14 +3,17 @@
 JavaScript的类型检查器
 
 ## 快速上手
-
-1. 初始化项目：yarn init --yes 
-2. 按照flow：yarn add flow-bin --dev
-3. 关闭vscode JS验证：在设置中搜索 JavaScript Validate，然后设置为禁用
-4. 添加flow配置文件： yarn flow init
-5. 添加前提：在文件头部添加标记 // @flow 
-6. 启动flow检测：yarn flow
-7. 结束检测：yarn flow stop
+- [Flow](#flow)
+  - [快速上手](#快速上手)
+  - [编译移除注解](#编译移除注解)
+  - [Flow 开发工具插件](#flow-开发工具插件)
+  - [Flow 类型推断](#flow-类型推断)
+  - [Flow 类型注解](#flow-类型注解)
+  - [Flow 常用类型](#flow-常用类型)
+    - [Flow 原始类型](#flow-原始类型)
+    - [Flow 数组类型](#flow-数组类型)
+    - [Flow 对象类型](#flow-对象类型)
+    - [特殊类型](#特殊类型)
 
 ```js
     // @flow
@@ -90,5 +93,123 @@ JavaScript的类型检查器
   }
 ```
 
-## Flow 原始类型
+## Flow 常用类型
+### Flow 原始类型
 
+```js
+  /**
+   * 原始类型
+   * @flow
+   */
+
+  const a: string = 'foo';
+
+  const b: number = Infinity; // NaN // 100
+
+  const c: boolean = false; // true
+
+  const d: null = null;
+
+  // void 表示 undefined
+  const e: void = undefined;
+
+  const f: symbol = Symbol();
+```
+
+### Flow 数组类型
+
+```js
+  /**
+   * 数组类型
+   * @flow
+   */
+
+  // 泛型
+  const arr1: Array<number> = [ 1, 2 ];
+
+  const arr2: number[] = [ 1, 2, 3 ];
+
+  // 元组 (数组长度固定)
+  // 使用场景：函数有多个返回值
+  const foo: [String, number] = [ 'foo', 100 ];
+```
+
+### Flow 对象类型
+
+```js
+  /**
+   * 数组类型
+   * @flow
+   */
+
+  const obj = { foo: string, bar: number } = {foo: 'string', bar: 100}
+
+  // 可选属性
+  const obj = { foo?: string, bar: number } = { bar: 100 }
+
+  // 键值对集合属性
+  const obj3 = { [string]: string } = {}
+  obj3.key1 = 'value1'
+  obj3.key2 = 'value2'
+```
+
+### 特殊类型
+
+```js
+  /**
+   * 特殊类型
+   * @flow
+   */
+
+  // 字面量类型
+  const a: 'foo' = 'foo';
+
+  // 字面量类型不会直接使用，而是配合 联合用法 使用
+  const type: 'success' | 'warning' | 'danger' = 'success';
+
+  // 利用 type 关键词 声明别名
+  type StringOrNumber = string | Number;
+  const b: StringOrNumber = 'string'; // 100
+
+  // maybe 类型
+  const gender: ?number = undefined;
+  // 相当于
+  const gender: number | null | void = undefined;
+
+```
+
+```js
+  /**
+   * Mixed Any
+   * @flow
+   */
+
+  // string / number / boolean / ...
+  function passMixed(value: mixed) {
+    // 需要添加类型判断，否则语法层面会直接报错
+    if (typeof value === 'string') {
+      value.substr(1);
+    }
+    if (typeof value === 'number') {
+      value * value;
+    }
+  }
+  passMixed('string');
+  passMixed(100);
+
+  function passAny(value: any) {
+    // 语法层面不会报错，不需要添加类型判断
+    value.substr(1);
+    value * value;
+  }
+  passAny('string');
+  passAny(100);
+
+  // 区别：any是弱类型，mixed是强类型
+  // 建议：项目中尽量使用mixed, any存在的意义是兼容以前的老代码，比如一些使用js了弱类型的特性的代码
+
+```
+
+flow类型 官方文档地址：https://flow.org/en/docs/types/
+
+flow类型手册：https://www.saltycrane.com/cheat-sheets/flow-type/latest

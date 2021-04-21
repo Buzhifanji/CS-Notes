@@ -3,19 +3,15 @@
  * @flow
  */
 
-const a: string = 'foo'
+const a: string = 'foo';
 
-const b: number = Infinity // NaN // 100
+const b: number = Infinity; // NaN // 100
 
-const c: boolean = false  // true
+const c: boolean = false; // true
 
-const d: null = null
+const d: null = null;
 
-const e: void = undefined
+// void 表示 undefined
+const e: void = undefined;
 
-const f: symbol = Symbol()
-
-
-/**
- * 
- */
+const f: symbol = Symbol();
