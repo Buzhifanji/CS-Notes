@@ -42,4 +42,5 @@ tsc 编译ts代码：检查类型是否异常 => 移除类型扩展的语法，�
 ![tsconfig](https://github.com/Buzhifanji/CS-Notes/blob/main/assets/typescript/image/ts-config-json.png)
 
 执行编译命令：yarn tsc ，编译后的代码都统一放到dist目录下了
+
 ![tsconfig](https://github.com/Buzhifanji/CS-Notes/blob/main/assets/typescript/image/tsc-success-start.png)
