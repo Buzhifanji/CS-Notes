@@ -2,6 +2,20 @@
 - [类型系统](#类型系统)
 - [ts 快速上手（编译指定文件）](#ts-快速上手编译指定文件)
 - [ts配置文件（项目配置）](#ts配置文件项目配置)
+- [ts 显示中中文的错误消息](#ts-显示中中文的错误消息)
+- [ts 作用域问题](#ts-作用域问题)
+- [ts 类型](#ts-类型)
+  - [Object类型](#object类型)
+  - [原始类型](#原始类型)
+  - [数组类型](#数组类型)
+  - [枚举类型](#枚举类型)
+  - [ts函数类型](#ts函数类型)
+  - [任意类型](#任意类型)
+  - [类型断言](#类型断言)
+  - [接口](#接口)
+- [ts 类](#ts-类)
+  - [基本使用](#基本使用)
+  - [类的访问修饰符](#类的访问修饰符)
 ## 类型系统
 
 - 强类型与弱类型（类型安全）
@@ -44,3 +58,252 @@ tsc 编译ts代码：检查类型是否异常 => 移除类型扩展的语法，�
 执行编译命令：yarn tsc ，编译后的代码都统一放到dist目录下了
 
 ![tsconfig](https://github.com/Buzhifanji/CS-Notes/blob/main/assets/typescript/image/tsc-success-start.png)
+
+## ts 显示中中文的错误消息
+
+    yarn tsc --locale zh_CN
+
+    vscode编辑显示中文错误消息：在设置搜索 TypeScript: Locale, 更改设置为： zh_CN
+
+    不建议这么做，不利于谷歌搜索错误信息
+
+## ts 作用域问题
+
+    在文件加上 export {}, 让文件中的代码变成模块
+
+## ts 类型
+
+### Object类型
+
+Object 类型 并不单只 对象类型，而是除了原始类型外的其他类型
+
+例如：
+```ts
+const foo: Object = function() {}
+```
+
+### 原始类型
+
+```ts
+/**
+ * 原始类型
+ */
+const a: string = 'string'
+
+const b: number = 100
+
+const c: boolean = true
+
+// 不是严格模式 以上三种类型可以设置为 null，反之不允许
+// 关闭严格模式 tsconfig.json 中设置 strict：false
+
+// 不是严格模式 const e: void = null，反之不允许
+const e: void = undefined
+
+const f: null = null
+
+const g: undefined = undefined
+
+const h: symbol = Symbol();
+
+```
+
+### 数组类型
+
+```ts
+// 数组类型
+
+// 泛型
+const arr1: Array<number> = [1, 2, 3]
+
+const arr2: number[] = [1, 2, 3]
+
+// 元组 (数组长度固定)
+// 使用场景：函数有多个返回值
+const tuple: [number, string] = [12, 'zcw]
+```
+### 枚举类型
+
+- 数字枚举
+```ts
+// 指定枚举值
+enum DerectionStatus {
+    Up = 1,
+    Down = 2,
+}
+
+// 不指定枚举值
+enum PostStatus {
+    Darft,  // 0
+    Published, // 1
+}
+```
+- 字符枚举
+
+```ts
+// 指定枚举值
+enum StringStatus {
+    Up = 'up',
+    Down = 'down',
+}
+```
+- 常量枚举
+```ts
+const enum DerectionStatus {
+    Up = 1,
+    Down = 2,
+} 
+```
+
+常量枚举与枚举的区别
+
+枚举：是一个双向键值对（可以通过值获取值，也可以通过值获取建），会入侵编译后的js代码
+常量枚举：只能通过建获取值
+
+通过编译后的js进行对比
+```js
+// 枚举
+enum DerectionStatus {
+    Up = 1,
+    Down = 2,
+}
+
+// 编译后
+var DerectionStatus;
+(function (DerectionStatus) {
+    DerectionStatus[DerectionStatus["Up"] = 1] = "Up";
+    DerectionStatus[DerectionStatus["Down"] = 2] = "Down";
+})(DerectionStatus || (DerectionStatus = {}));
+
+// 常量枚举
+const enum constEnum {
+    Up = 1,
+    Down = 2,
+}
+const aa: number = constEnum.Up
+
+// 编译后
+const aa = 1 /* Up */;
+```
+
+**如果不需要通过索引获取键值，建议用常量枚举**
+
+### ts函数类型
+
+- 函数声明式
+
+```ts
+function sum(a: number, b: number, ...rest: number): string {
+    return 'ok'
+}
+```
+- 函数表达式
+
+```ts
+const fn: (a: number, b: number) => string = function(a: number, b: number): string {
+    return 'ok'
+}
+```
+
+### 任意类型
+```ts
+function stringify(value: any) {
+    return JSON.stringify(value)
+}
+let foo: any = 'string'
+```
+// 建立避免使用 any 类型，any类型是不安全
+
+### 类型断言
+
+告诉ts 这个类型我明确知道是什么类型
+
+```ts
+const num: number[] = [110, 90, 119, 112]
+const res = num.find(i => i > 0)
+
+const num1 = res as number  // 建议使用
+const num2 = <number>res  // JSX 下不兼容
+```
+
+### 接口
+```ts
+interface Post {
+    title: string;
+    content: string;
+    subtitle?: string; // 可选成员
+    readonly sumary: string; // 只读成员
+}
+const hello: Post = {
+    title: 'hello ts',
+    content: 'a js',
+    sumary: 'b js',
+}
+
+// 动态成员
+interface CacheType {
+    [key: string]: string
+}
+const cache: CacheType = {
+    foo: '1',
+    too: '2',
+}
+```
+## ts 类
+### 基本使用
+```ts
+class Person {
+    name: string
+    age: number
+
+    constructor(name: string, age: number) {
+        this.name = name
+        this.age = age
+    }
+    sayHi(msg: string): void {
+        console.log(`I am ${msg}`)
+    }
+}
+```
+### 类的访问修饰符
+```ts 
+class Person {
+    public name: string // 公共的
+    private age: number // 私有的，只能类内部自己能访问
+    protected gender: boolean;  // 受保护的
+
+    constructor(name: string, age: number) {
+        this.name = name
+        this.age = age
+        this.gender = true
+    }
+    sayHi(msg: string): void {
+        console.log(`I am ${msg}`)
+        console.log(this.age)
+    }
+}
+const tom = new Person('tom', 18)
+console.log(tom.name) // 访问成功
+// console.log(tom.age)  // 访问失败
+// console.log(tom.gender) // 访问失败
+
+class Student extends Person {
+    // 私有的构造函数，只能通过静态方法实例化
+    private constructor(name: string, age: number) {
+        super(name, age)
+        console.log(tom.gender) // 访问成功
+    }
+    static create(name: string, age: number) {
+        return new Student(name, age)
+    }
+}
+
+const jack = Student.create('jack', 19)
+```
+public, protected,private 的区别：访问范围不同
+
+public： 全部
+
+protected： 子类可以访问，实例不行
+
+private： 只能类自己访问
