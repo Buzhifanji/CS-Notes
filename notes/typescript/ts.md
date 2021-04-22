@@ -32,7 +32,7 @@
 
    编译成功后同级目录下会得到一个同名的js文件：start.js    
 
-tsc 编译ts代码：检查类型是否异常 => 移除类型扩展的语，并且自动转换ESAMScript新特性t
+tsc 编译ts代码：检查类型是否异常 => 移除类型扩展的语法，并且自动转换ESAMScript新特性
 ## ts配置文件（项目配置）
 
 执行目录：yarn tsc --init
@@ -41,6 +41,5 @@ tsc 编译ts代码：检查类型是否异常 => 移除类型扩展的语，并�
 
 ![tsconfig](https://github.com/Buzhifanji/CS-Notes/blob/main/assets/typescript/image/ts-config-json.png)
 
-执行编译命令：yarn tsc
-
+执行编译命令：yarn tsc ，编译后的代码都统一放到dist目录下了
 ![tsconfig](https://github.com/Buzhifanji/CS-Notes/blob/main/assets/typescript/image/tsc-success-start.png)
