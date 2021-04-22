@@ -1,3 +1,7 @@
+
+- [类型系统](#类型系统)
+- [ts 快速上手（编译指定文件）](#ts-快速上手编译指定文件)
+- [ts配置文件（项目配置）](#ts配置文件项目配置)
 ## 类型系统
 
 - 强类型与弱类型（类型安全）
@@ -13,3 +17,30 @@
 
     动态类型：运行阶段才能够明确变量类型，而且变量的类型随时可以改变
 
+## ts 快速上手（编译指定文件）
+
+1. 初始化项目：yarn init --yes
+2. 按照ts到本地：yarn add typescript --dev
+   
+   成功后就可以使用tsc命令编译ts代码了
+
+   ![tsc](https://github.com/Buzhifanji/CS-Notes/blob/main/assets/typescript/image/tsc.png)
+
+3. 编译ts代码：yarn tsc ./src/start.ts
+
+   ![tsc](https://github.com/Buzhifanji/CS-Notes/blob/main/assets/typescript/image/ts-start.png)
+
+   编译成功后同级目录下会得到一个同名的js文件：start.js    
+
+tsc 编译ts代码：检查类型是否异常 => 移除类型扩展的语，并且自动转换ESAMScript新特性t
+## ts配置文件（项目配置）
+
+执行目录：yarn tsc --init
+
+然后会生成tsconfig.json, 更改配置
+
+![tsconfig](https://github.com/Buzhifanji/CS-Notes/blob/main/assets/typescript/image/ts-config-json.png)
+
+执行编译命令：yarn tsc
+
+![tsconfig](https://github.com/Buzhifanji/CS-Notes/blob/main/assets/typescript/image/tsc-success-start.png)
