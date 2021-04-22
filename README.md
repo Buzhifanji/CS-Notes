@@ -12,6 +12,7 @@
 ## JS-type
 
 - [flow](https://github.com/Buzhifanji/CS-Notes/blob/main/notes/typescript/flow.md)
+- [typescript](https://github.com/Buzhifanji/CS-Notes/blob/main/notes/typescript/ts.md)
 
 ## vue
 
