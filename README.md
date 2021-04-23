@@ -14,6 +14,9 @@
 - [flow](https://github.com/Buzhifanji/CS-Notes/blob/main/notes/typescript/flow.md)
 - [typescript](https://github.com/Buzhifanji/CS-Notes/blob/main/notes/typescript/ts.md)
 
+## 前端工程化
+
+- [了解前端工程化](https://github.com/Buzhifanji/CS-Notes/blob/main/notes/前端工程化/engineer.md)
 ## vue
 
 ![离散数学](https://img.shields.io/badge/Math-离散数学-bule.svg?style=plastic)
