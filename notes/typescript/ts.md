@@ -16,6 +16,9 @@
 - [ts 类](#ts-类)
   - [基本使用](#基本使用)
   - [类的访问修饰符](#类的访问修饰符)
+  - [类与接口](#类与接口)
+  - [抽象类](#抽象类)
+- [泛型](#泛型)
 ## 类型系统
 
 - 强类型与弱类型（类型安全）
@@ -271,15 +274,18 @@ class Person {
     public name: string // 公共的
     private age: number // 私有的，只能类内部自己能访问
     protected gender: boolean;  // 受保护的
+    private readonly show: boolean; // 只读成员
 
     constructor(name: string, age: number) {
         this.name = name
         this.age = age
         this.gender = true
+        this.show = true
     }
     sayHi(msg: string): void {
         console.log(`I am ${msg}`)
         console.log(this.age)
+        console.log(this.gender)
     }
 }
 const tom = new Person('tom', 18)
@@ -287,6 +293,7 @@ console.log(tom.name) // 访问成功
 // console.log(tom.age)  // 访问失败
 // console.log(tom.gender) // 访问失败
 
+// 子类继承父类
 class Student extends Person {
     // 私有的构造函数，只能通过静态方法实例化
     private constructor(name: string, age: number) {
@@ -302,8 +309,74 @@ const jack = Student.create('jack', 19)
 ```
 public, protected,private 的区别：访问范围不同
 
-public： 全部
+    public： 类自己，子类，实例都可以访问
 
-protected： 子类可以访问，实例不行
+    protected： 类自己，子类可以访问，实例不行
 
-private： 只能类自己访问
+    private： 只能类自己访问
+
+### 类与接口
+```ts
+// 接口对类进行抽象，不包含具体实现
+
+// 尽量让接口简单，一个接口约束一个能力
+interface Eat() {
+    eat(food: string): void
+}
+interface Run() {
+    run(distance: number): void
+}
+
+// 类实现接口
+class Person implements Eat, Run {
+    eat(foods: string): void {
+        console.log(`吃的美食：${foods}`)
+    }
+    run(distance: number): void {
+        console.log(`直立行走：${distance}`)
+    }
+}
+// 类实现接口
+class Animal implements Eat, Run {
+    eat(foods: string): void {
+        console.log(`大口大口的吃：${foods}`)
+    }
+    run(distance: number): void {
+        console.log(`爬行：${distance}`)
+    }
+}
+```
+
+### 抽象类 
+
+与类的接口类似，都可以约束子类必须要有的成员，不同之处，**抽象类可以包含具体实现，但接口不行**
+
+```ts
+// 抽象类
+// 抽象不能实例，只能被子类继承
+abstract class Animal {
+    eat(foods: string): void {
+        console.log(`大口大口的吃：${foods}`)
+    }
+    // 抽象方法
+    abstract run(distance: number): void
+}
+class Dog extends Animal {
+    run(distance: number): void {
+        console.log(`爬行：${distance}`)
+    }
+}
+```
+
+## 泛型
+
+声明的时候不指定类型，调用的时候传入指定类型
+
+```ts
+function createArray<T>(...args: T[]): T[] {
+  return args;
+}
+console.log(createArray<number>(1, 2, 3));
+console.log(createArray<string>('jack', 'tom'));
+
+```
