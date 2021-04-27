@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>hash路由</div>
+    <div>
+        <button id="btn1">page1</button>
+        <button id="btn2">page2</button>
+    </div>
+    <script>
+        function getDom(id) {
+            return document.querySelector(id)
+        }
+        getDom('#btn1').addEventListener('click', event => {
+            window.location.hash = 'page1'
+        }, false)
+        getDom('#btn2').addEventListener('click', event => {
+            window.location.hash = 'page2'
+        }, false)
+        window.addEventListener('hashchange', event => {
+            const { oldURL, newURL } = event
+            console.log(newURL, oldURL);
+        }, false)
+    </script>
+</body>
+</html>
