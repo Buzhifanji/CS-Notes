@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>compile</title>
+</head>
+<body>
+    <div id="app" >{{name}}</div>
+    <script>
+
+    </script>
+    <script>
+        // 正则 （匹配{{}}）
+        const defaultRE = /\{\{(.+?)\}\}/g;
+        // 把 数据
+        const data = {name: 'hello 编译模板'}
+        const element = document.querySelector('#app')
+        // 替换
+        const textContxt = element.textContent.replace(defaultRE, (...rest) => {
+            // 把 {{name}} 替换成 data.name
+            element.textContent = data[rest[1]]
+        })       
+    </script>
+</body>
+</html>

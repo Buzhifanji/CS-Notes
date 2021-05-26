@@ -7,30 +7,69 @@
     <title>Document</title>
 </head>
 <body>
-    <div>hash路由</div>
+    <!-- <div>hash路由</div>
     <div>
         <button id="btn1">page1</button>
         <button id="btn2">page2</button>
-    </div>
+    </div> -->
     <script>
-        // 获取dom
-        function getDom(id) {
-            return document.querySelector(id)
+        const o = {
+            a: 'a',
+            get b() {
+                return 'b'
+            },
+            set b(val) {
+                debugger
+                return val
+            }
         }
-        // 监听 btn1 点击事情
-        getDom('#btn1').addEventListener('click', event => {
-            window.location.hash = 'one'
-        }, false)
-        // 监听 btn2 点击事情
-        getDom('#btn2').addEventListener('click', event => {
-            window.location.hash = 'two'
-        }, false)
-        // 监听 hash 事件
-        window.addEventListener('hashchange', event => {
-            const { oldURL, newURL } = event
-            console.log('newURL: ', newURL);
-            console.log('oldURL: ', oldURL);
-        }, false)
+        const el = document.createElement('p');
+        el.textContent = '在控制台输入vm.msg = 123';
+        document.body.append(el);
+
+        const data = { msg: 12 }
+        const vm = {}
+
+        Object.defineProperty(vm, 'msg', {
+            configurable: true,
+            enumerable: true,
+            get: () => {
+                debugger
+                console.log('获取');
+                return data.msg
+            },
+            set: (val) => {
+                debugger
+                console.log('赋值msg ==> ', val);
+                if (val === data.msg) {
+                    return
+                }
+                data.msg = val
+                document.getElementsByTagName('p')[0].textContent = val;
+            }
+        })
+
+
+
+
+        // // 获取dom
+        // function getDom(id) {
+        //     return document.querySelector(id)
+        // }
+        // // 监听 btn1 点击事情
+        // getDom('#btn1').addEventListener('click', event => {
+        //     window.location.hash = 'one'
+        // }, false)
+        // // 监听 btn2 点击事情
+        // getDom('#btn2').addEventListener('click', event => {
+        //     window.location.hash = 'two'
+        // }, false)
+        // // 监听 hash 事件
+        // window.addEventListener('hashchange', event => {
+        //     const { oldURL, newURL } = event
+        //     console.log('newURL: ', newURL);
+        //     console.log('oldURL: ', oldURL);
+        // }, false)
     </script>
 </body>
 </html>
