@@ -4,25 +4,79 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>hash路由</title>
+    <style>
+        section {
+            display: flex;
+            width: 100%;
+            height: 100px;
+            background-color: #eee;
+        }
+        section > ul {
+            width: 100px;
+        }
+        section > div {
+            flex: 1;
+            color: rgb(27, 26, 25);
+            background-color: rgb(79, 138, 118);
+        }
+    </style>
 </head>
 <body>
+    <div>hash路由</div>
+    <section>
+        <ul>
+            <!-- 定义路由 -->
+            <li><a href="#/vue">vue</a></li>
+            <li><a href="#/react">react</a></li>
+            <li><a href="#/angular">angular</a></li>
+        </ul>
+        <div id="view"></div>
+    </section>
+    <div>
+    </div>
     <script>
-        function one() {
-            console.log('one')
-            function two() {
-                console.log('two')
-            }
-            two()
-        }
-        function three() {
-            console.log('three')
-        }
-        function thour(fn)  {
+       class Router {
+        constructor() {
+           this.routes = {} // 以键值对的形式储存路由，值是一个回调函数
+           this.history = []    // 历史记录
+           this.hisCurrent = -1 // 上一条历史记录对应的索引
+           this.currentUrl = '' //  当前路由的URL
+           this.render = this.render.bind(this);
+           window.addEventListener('DOMContentLoaded', this.render) // 页面加载完不会触发 hashchange，这里主动触发一次 hashchange 事件
+           window.addEventListener('hashchange', this.render)   // 监听路由变化
+         }
+         /* 存储路由 */
+         register(path, callback) {
+             console.log(this.routes);
+            callback = callback || (() => {})
+            this.routes[path] = callback    // 注册路由和回调
+         }
+         /* 更新对应的内容 */
+         render() {	
+            // 更新当前路由
+            this.currentUrl = location.hash.slice(1) || '/';
             
-        }
-        one();
-        three()
+            this.routes[this.currentUrl]()
+         }
+         back() {
+
+         }
+       }
+       function changeView(value) {
+           document.querySelector('#view').innerHTML = value
+       }
+       // 路由配置列表
+       const routesList = [
+           { path: '/', callback: () => changeView('home')},
+           { path: '/vue', callback: () => changeView('vue')},
+           { path: '/react', callback: () => changeView('react')},
+           { path: '/angular', callback: () => changeView('angular')},
+       ]
+       const router  = new Router()
+       routesList.forEach(el => {
+            router.register(el.path, el.callback)
+       })
     </script>
 </body>
 </html>
