@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主题色</title>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --text-color: #f0f6fc;
+        }
+        :root[theme='light'] {
+            --bg-color: #fff;
+            --text-color: #2c3e50;
+        }
+        :root[theme='blue'] {
+            --bg-color: rgb(102, 93, 93);
+            --text-color: #18528b;
+        }
+        body {
+            color: var(--text-color);
+            background-color: var(--bg-color);
+        }
+    </style>
+
+</head>
+<body>
+    <h2>主题</h2>
+    <button id="btn">黑暗主题色</button>
+    <button id="light">白色主题色</button>
+    <button id="blue">蓝色主题色</button>
+    <script>
+        function fn(id) {
+            const ele = document.querySelector(`#${id}`)
+            ele.addEventListener('click', () => {
+                if(id === 'btn') {
+                    document.documentElement.removeAttribute('theme')
+                } else{
+                    document.documentElement.setAttribute('theme', id)
+                }
+            })
+        }
+        ['btn', 'light', 'blue'].forEach(el => fn(el))
+    </script>
+</body>
+</html>

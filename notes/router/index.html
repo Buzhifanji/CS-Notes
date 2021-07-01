@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div #app>
+        <ul>
+            <li>
+                <a href="#/?id=111">home</a>
+            </li>
+            <li>
+                <a href="#/a">aaaa</a>
+            </li>
+            <li>
+                <a href="#/b">bbbb</a>
+            </li>
+        </ul>
+        <div id="content">home</div>
+    </div>
+    <script>
+        function isFn(value) {return typeof value === 'function'}
+        function getUrlParam(url) {
+            const arr = url.split('?')
+            const path = arr[0] // 路由地址
+            const params = arr[1] ? arr[1].split('&') : [] // 路由参数
+            const query = {}
+            params.forEach(el => {
+                const item = el.split('=')
+                query[item[0]] = item[1]
+            })
+            return {path, query}
+        }
+        class Router {
+            constructor(arr) {
+                this.routes = {} // 以键值对的形式储存路由，值是一个回调函数
+                this.currentUrl = '' //  当前路由的URL
+                this.preventUrl = ''
+                this.beforeFn = null
+                this.afterFn = null
+                this.init(arr)
+            }
+            /*
+            * 初始化路由
+            */
+            init = (arr) => {
+                // 写入路由注册表
+                arr.forEach(el => {
+                    this.register(el)
+                });
+                // 页面加载完不会触发 hashchange，这里主动触
+                window.addEventListener('DOMContentLoaded', this.change) 
+                // 监听路由变化
+                window.addEventListener('hashchange', this.change)
+            }
+            /* 路由注册 */
+            register = ({path, component}) => {
+                this.routes[path] = {
+                    callback: (path, value) => {
+                        this.asyncLoad(component, value)
+                    },
+                    cache: null
+                }
+            }
+            /*
+            * 加载 组件
+            */
+            asyncLoad = (component, value) => {
+                const {callback, cache} = this.routes[this.currentUrl]
+                if(cache) {
+                    cache(value)
+                } else {
+                    component().then(module => {
+                        const fn = module.SPA_RESOLVE_INIT
+                        if(this.afterFn) {
+
+                        }
+                        this.routes[this.currentUrl].cache = fn
+                        fn(value)
+                    })
+                }
+            }
+            /*
+            * 路由变更
+            */
+            change = () => {
+                // 更新当前路由
+                let url = location.hash.slice(1) || '/';
+                if(!Reflect.has(this.routes, url)) { // 判断当前变更路由需要有配置对应的路由
+                    url = '/404'
+                }
+                const preventUrl = this.currentUrl
+                this.currentUrl = url
+                if(this.beforeFn && preventUrl) {
+                    const to = getUrlParam(url)
+                    const from = getUrlParam(preventUrl)
+                    const _this = this;
+                    function next(value) {
+                        const path = value ? value : url
+                        _this.routes[url].callback(path)
+                    }
+                    this.beforeFn(to, from, next)
+                } else{
+                    this.routes[url].callback(url)
+                }
+            }
+            /*
+            * 路由切换前
+            */
+            beforeEach = (callback) => {
+                if(isFn(callback)) {
+                    this.beforeFn = callback
+                } else {
+                    console.trace('路由切换前钩子需要传入一个回调函数')
+                }
+            }
+            afterEach = (callback) => {
+                if(isFn(callback)) {
+                    this.afterFn = callback
+                } else {
+                    console.trace('路由切换后钩子需要传入一个回调函数')
+                }
+            }
+        }
+        const routeList = [
+            {
+                path: '/', 
+                component: () => import('./index.js'),
+                redirect: '/home'
+            },
+            {
+                path: '/a', 
+                component: () => import('./a.js'),
+                children: [
+                    {
+                        path: '/'
+                    }
+                ]
+            },
+            {path: '/b', component: () => import('./b.js')},
+            {path: '/404', component: () => import('./err.js')},
+        ]
+        const router = new Router(routeList)
+        router.beforeEach((to, from, next) => {
+            console.log(from);
+            console.log(to);
+            next()
+        })
+    </script>
+</body>
+</html>
