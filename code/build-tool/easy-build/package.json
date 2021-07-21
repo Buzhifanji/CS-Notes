@@ -1,0 +1,17 @@
+{
+  "name": "easy-build",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "browser-sync": "^2.27.4",
+    "npm-run-all": "^4.1.5",
+    "sass": "^1.35.2"
+  },
+  "scripts": {
+    "build": "node node_modules/.bin/sass scss/main.scss css/style.css --watch",
+    "serve": "browser-sync . --files \"css/*.css\"",
+    "start": "run-p build serve"
+  },
+  "dependencies": {}
+}

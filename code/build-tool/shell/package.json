@@ -1,0 +1,7 @@
+{
+    "name": "hello",
+    "bin": {
+        "hello": "hello"
+    },
+    "dependencies": {}
+}

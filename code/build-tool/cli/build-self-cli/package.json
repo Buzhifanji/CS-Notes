@@ -1,0 +1,17 @@
+{
+  "name": "build-self-cli",
+  "version": "1.0.0",
+  "description": "从零构建一个脚手架",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "chalk": "^4.1.1",
+    "co": "^4.6.0",
+    "co-prompt": "^1.0.0",
+    "commader": "^1.0.0"
+  }
+}

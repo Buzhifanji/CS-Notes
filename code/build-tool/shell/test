@@ -1,0 +1,8 @@
+#!/usr/bin/env node
+console.log('hello world');
+let name = process.argv[2];
+let {exec} = require('child_process');
+let child  = exec('echo hello '+name,(err,stdout,stderr)=>{
+    if(err) throw err;
+    console.info(stdout);
+});h
