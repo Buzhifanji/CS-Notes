@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <ul>
+            <li class="per-tab" @click="toggleView('Home')">Home</li>
+            <li class="per-tab" @click="toggleView('About')">About</li>
+        </ul>
+        <div class="tab-content">
+            <component :is="view"></component> <!-- view为变量 -->
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <script>
+        let Home = {//Home组件
+            template:'<p style="color:#787878;">Hello Home!</p>',
+            data() {
+                return {}
+            },
+            created() {
+                console.log('init')
+            },
+            methods: {
+                init() {
+                    console.log('init')
+                }
+            }
+        }
+        let About = {//About组件
+            template:'<p>Hello About!</p>',
+            created() {
+                console.log('About')
+            },
+        }
+        let vm = new Vue({
+            el:'#app',
+            components:{Home,About},
+            data(){
+                return{
+                    view:''
+            }
+        },
+        methods:{
+            toggleView(view){
+                this.view = view
+            }
+        }
+    })
+    </script>
+</body>
+</html>
