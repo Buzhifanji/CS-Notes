@@ -12,8 +12,8 @@ class Observer {
     defineReactive(data, key, value) {
         // 递归处理 嵌套对象
         this.walk(value)
-        const dep = new Dep()
         const _this = this
+        const dep = new Dep()
         Object.defineProperty(data, key, {
             configurable: true,
             enumerable: true,
@@ -26,9 +26,7 @@ class Observer {
                     return
                 }
                 value = newValue
-                // 处理修改的时候，是新增对象的情况
                 _this.walk(value)
-                // 发送通知
                 dep.notify()
             }
         })

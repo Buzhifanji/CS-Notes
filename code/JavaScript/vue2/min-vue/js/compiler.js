@@ -43,23 +43,23 @@ class Compiler {
     // 处理 v-text 指令
     textUpdater(node, value, key) {
         node.textContent = value
-        new Watcher(this.vm, key, (newValue) => {
-            node.textContent = newValue
-        })
+        // new Watcher(this.vm, key, (newValue) => {
+        //     node.textContent = newValue
+        // })
     }
     // v-model
     modelUpdater(node, value, key) {
         node.value = value
-        new Watcher(this.vm, key, (newValue) => {
-            node.value = newValue
-        })
-        node.addEventListener('input', () => {
-            this.vm[key] = node.value
-        })
+        // new Watcher(this.vm, key, (newValue) => {
+        //     node.value = newValue
+        // })
+        // node.addEventListener('input', () => {
+        //     this.vm[key] = node.value
+        // })
     }
 
 
-    // 编译文本节点，处理差值表达式
+    // 编译文本节点，处理插值表达式
     compileText(node) {
         // {{ msg }}
         const reg = /{\{(.+?)\}\}/
@@ -69,9 +69,9 @@ class Compiler {
             node.textContent = value.replace(reg, this.vm[key])
 
             // 创建watcher对象，当数据改变更新视图
-            new Watcher(this.vm, key, (newValue) => {
-                node.textContent = newValue
-            })
+            // new Watcher(this.vm, key, (newValue) => {
+            //     node.textContent = newValue
+            // })
         }
     }
     // 判断元素属性是否是指令
