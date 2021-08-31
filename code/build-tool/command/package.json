@@ -1,0 +1,9 @@
+{
+    "name": "hello",
+    "bin": {
+        "hello": "hello"
+    },
+    "scripts": {
+        "serve": "hello hi"
+    }
+}

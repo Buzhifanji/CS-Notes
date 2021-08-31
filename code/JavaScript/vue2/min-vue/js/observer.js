@@ -1,8 +1,6 @@
 class Observer {
     constructor(data) {
-        if(data && typeof data === 'object') {
-            this.walk(data)
-        }
+        this.walk(data)
     }
     walk(data) {
         if(data && typeof data === 'object') {
@@ -12,12 +10,15 @@ class Observer {
         }
     }
     defineReactive(data, key, value) {
+        // 递归处理 嵌套对象
+        this.walk(value)
         const _this = this
-        this.walk(data.key)
+        const dep = new Dep()
         Object.defineProperty(data, key, {
             configurable: true,
             enumerable: true,
             get() {
+                Dep.target && dep.addSub(Dep.target)
                 return value
             },
             set(newValue) {
@@ -26,6 +27,7 @@ class Observer {
                 }
                 value = newValue
                 _this.walk(value)
+                dep.notify()
             }
         })
     }

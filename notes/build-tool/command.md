@@ -42,17 +42,36 @@ hello node shell demo
 
 **在文件授权之后，执行的 ./hello 本质上执行的还是 node ./hello**
 
-这种做法
-
-这种做法，每次执行都有找到路径，接下来换种不用写路径的写法。
+这种做法，每次执行都有需要找到对应路径，接下来换种不用写路径的写法。
 
 在当前目录下创建一个package.json
 
 ```json
 {
     "name": "hello",
+  	"scripts": {
+        "serve": "node hello"
+    }
+}
+```
+
+然后执行 npm run serve，我们会得到一样的结果。
+
+```js	
+$ npm run serve
+hello node shell demo
+```
+
+这里我们实现了一个npm script脚步，但距离实际脚步还差一步，删除 命令中带有的 node。接下来修改package.json
+
+```js
+{
+    "name": "hello",
     "bin": {
         "hello": "hello"
+    },
+    "scripts": {
+        "serve": "hello"
     }
 }
 ```
@@ -63,20 +82,22 @@ hello node shell demo
 $ npm link
 ```
 
-最后执行 hello
+最后执行 npm run serve
 
 ```js
-$ hello
+$  npm run serve
 hello world
 ```
 
 解释：
 
-**#!/usr/bin/env node**：约定写在脚本的第一行，用于指明该脚本文件要使用 node 来执行
+**#!/usr/bin/env node**：约定写在脚本的第一行，用于指明该脚本文件是在node环境中执行
 
 **Chomd 755**: **chmod**是Linux下设置文件权限的命令,**chmod 755** 设置用户的权限为文件所有者可读可写可执行
 
-**npm link**：把项目连接到全局，这样可以在其它项目一样可以使用这个命令了。
+**npm link**：把项目连接到全局的node_modules中，这样可以在其它项目一样可以使用这个命令了。
+
+**bin**: 存放npm可执行脚本，在实际项目中，可执行脚本都存放在node_molues/.bin目录中。
 
 ## 可执行脚本参数
 
@@ -87,5 +108,12 @@ hello world
 console.log('hello ', process.argv[2]);
 ```
 
+执行 hello param
 
+```js
+$ hello param
+hello param
+```
+
+总结：在实际中我们执行npm run serve 启动项目的时候，实际上是执行 node_modules/.bin目录下serve对应的建文件，例如，文件是执行 hello。在vue项目中执行的是vue-cli-service，而vue-cli-servce 后面的就是脚本参数。
 

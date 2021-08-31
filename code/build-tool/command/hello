@@ -1,2 +1,3 @@
 #!/usr/bin/env node
 console.log('hello node shell demo')
+console.log('hello ', process.argv[2]);
