@@ -651,8 +651,8 @@ class Observer {
     defineReactive(data, key, value) {
         // 递归处理 嵌套对象
         this.walk(value)
-        const _this = this
-        const dep = new Dep()
+        const _this = this // 缓存this
+        const dep = new Dep() // 实例收集者
         Object.defineProperty(data, key, {
             configurable: true,
             enumerable: true,
@@ -678,15 +678,128 @@ class Observer {
 
 这里Dep.target 的是啥？target是Dep类中的静态属性。
 
-它在什么时候被赋值的？而且这个
+它在什么时候被赋值的？接下来就要实现把target赋值到Dep类中
+
+##### 修改Watcher
+
+```js
+class Watcher {
+    constructor(vm, key, cb, ) {
+        this.vm = vm
+        this.key = key
+        this.cb = cb
+        // 把 watcher 对象记录到Dep类静态属性target
+        Dep.target = this
+        // 触发get方法，在get方法中调用addSub
+        this.oldValue = vm[key]
+        Dep.target = null
+    }
+    update() {
+        const newValue = this.vm[this.key]
+        if(this.oldValue === newValue) {
+            return
+        }
+        this.cb(newValue)
+    }
+}
+```
+
+##### 修改comoiler
+
+```js	
+class Compiler {
+    constructor(vm) {
+        this.el = vm.$el
+        this.vm = vm
+        this.compile(this.el)
+    }
+		...
+    // 编译元素节点，处理指令
+    compileElement(node) {
+        // console.log(node.attributes)
+        Array.from(node.attributes).forEach(attr => {
+            // 判断是为是指令
+            let attrName = attr.name
+            if(this.isDirective(attrName)) {
+                // v-text --> text
+                attrName = attrName.substr(2)
+                const key = attr.value
+                // v-text 调用 textUpdater 方法
+                // v-vmodel 调用 modelUpdater 方法
+                this.updader(node, key, attrName)
+            }
+        })
+    }
+  	// 通用 指令 处理方法，方便扩展
+    updader(node, key, attrName) {
+        const updateFn = this[attrName + 'Updater']
+        updateFn && updateFn.call(this, node, this.vm[key], key)
+    }
+    // 处理 v-text 指令
+    textUpdater(node, value, key) {
+        node.textContent = value
+        new Watcher(this.vm, key, (newValue) => {
+            node.textContent = newValue
+        })
+    }
+    // v-model
+    modelUpdater(node, value, key) {
+        node.value = value
+        new Watcher(this.vm, key, (newValue) => {
+            node.value = newValue
+        })
+    }
 
 
+    // 编译文本节点，处理插值表达式
+    compileText(node) {
+        // {{ msg }}
+        const reg = /{\{(.+?)\}\}/
+        const value = node.textContent
+        if(reg.test(value)) {
+            const key = RegExp.$1.trim()
+            node.textContent = value.replace(reg, this.vm[key])
 
+            // 创建watcher对象，当数据改变更新视图
+            new Watcher(this.vm, key, (newValue) => {
+                node.textContent = newValue
+            })
+        }
+    }
+  ...
+}
+```
 
+编译模板在处理文本节点的时候，调用compileText方法，实例一个Watcher；Watcher实例的时候，会把对 实例（watcher） 对象记录到*Dep类静态属性target*上，然后然后访问通过文本的key访问的data中对应的value，在访问的时候会触发getter方法，getter里会调用dep.addSub(),收集watcher实例，也就是依赖，收集之后，代码继续回到实例wather函数调用栈中，把Dep类的target属性清空，因为已经收集依赖，建立了通信渠道。这样做是为了，防止内存泄漏。这就是**依赖收集**的过程。
 
+当数据更新发生变化的时候，会触发setter方法，然后会调用dep.notify方法，此方法里遍历subs数组，并且触发water的update方法，而每一个watcher都存着更新视图的回到函数，当update方法触发的时候，视图也会随之更新。这就是**更新依赖**的过程
 
+遍历模板在处理指令的时候，需要先调用updader方法，找到指令与之对应的方法，然后执行与compiler一样的逻辑。
 
+#### 6.双向数据绑定
 
+双向数据绑定是通过v-model这个指令实现，我已经实现了，当数据更新了，v-model对应的视图会随之更新。我们只要实现，当视图更新了，更新data上的值就能实现双向数据绑定了。
+
+```js
+class Compiler {
+  ...
+  // v-model
+  modelUpdater(node, value, key) {
+    node.value = value
+    // data变更 通知视图更新
+    new Watcher(this.vm, key, (newValue) => {
+      node.value = newValue
+    })
+    // 视图更新，更新data上数据
+    node.addEventListener('input', () => {
+        this.vm[key] = node.value
+    })
+  }
+  ...
+}
+```
+
+通过监听input的事情即可实现。
 
 
 

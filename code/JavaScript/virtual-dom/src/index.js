@@ -26,5 +26,5 @@ const vnode3 = h('div', {}, h('span', {}, 'A'))
 console.log('vnode3', vnode3)
 
 const app = document.querySelector('#app')
-path(app, vnode1)
+path(app, vnode2)
 //
