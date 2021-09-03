@@ -801,7 +801,5 @@ class Compiler {
 
 通过监听input的事情即可实现。
 
-
-
-
+完整源码地址:[CS-Notes/code/JavaScript/vue2/min-vue at main · Buzhifanji/CS-Notes (github.com)](https://github.com/Buzhifanji/CS-Notes/tree/main/code/JavaScript/vue2/min-vue)
 
