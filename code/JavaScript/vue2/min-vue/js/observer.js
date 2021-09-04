@@ -18,16 +18,20 @@ class Observer {
             configurable: true,
             enumerable: true,
             get() {
-                Dep.target && dep.addSub(Dep.target)
+				// 收集依赖
+				Dep.target && dep.addSub(Dep.target);
+				// 这里val不能通过data[value]获取，否则会陷入自调用死循环
                 return value
             },
             set(newValue) {
                 if(newValue === value) {
                     return
                 }
-                value = newValue
-                _this.walk(value)
-                dep.notify()
+				value = newValue;
+				// 如果value是对象，则继续设置它下面的成员为响应式数据
+				_this.walk(newValue);
+				// 发送通知
+				dep.notify();
             }
         })
     }
