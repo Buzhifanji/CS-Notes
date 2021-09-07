@@ -9,8 +9,14 @@ export function path(oldVnode, newVnode) {
     }
     // 新旧节点一样
     if(oldVnode.el === newVnode.el && oldVnode.key === newVnode.key) {
-
+        // 判断新旧节点是否同一个对象
+        if(oldVnode === newVnode) return
+        // text
+        if(newVnode.text !== undefined && (newVnode.children === undefined || newVnode.children.length === 0)) {
+            
+        }
     } else {
+        debugger
         // 新旧节点不一样
         const newVnodeElement = createElement(newVnode)
         if(oldVnode.el !== undefined) {

@@ -27,4 +27,24 @@ console.log('vnode3', vnode3)
 
 const app = document.querySelector('#app')
 path(app, vnode2)
-//
+
+// 更新节点对比
+const btn = document.querySelector('#btn')
+const myVode1 = h('section', {}, [
+    h('p', {}, 'A'),
+    h('p', {}, 'B'),
+    h('p', {}, 'C'),
+    h('p', {}, 'D'),
+])
+path(app, myVode1)
+
+const myVode2 = h('section', {}, [
+    h('p', {}, 'A'),
+    h('p', {}, 'B'),
+    h('p', {}, 'C'),
+    h('p', {}, 'D'),
+])
+
+btn.addEventListener('click',() => {
+
+})
