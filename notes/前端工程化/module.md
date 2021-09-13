@@ -1,6 +1,4 @@
-## 模块化学习笔记
-先如今模块化在前端已经标准化，在浏览器中采用ES Module，而在Node环境中会采用CommonJS。所以我们掌握这两种标准，就能掌握前端的模块化
-
+## ES Module 模块化完整知识
 ## ES Modules 特性
 
 通过 script 添加 type = module 的属性，就可以 ES Module 的标准执行其中的 JS 代码
@@ -203,10 +201,5 @@ export { age, name, sex }
 // 注意采用当前写法时，获取不到导入导出的变量
 export {deault as age, name } from 'a.js'
 export { sex } from 'b.js'
-```
-
-## ES Modules 兼容方案
-
-```js
 ```
 
