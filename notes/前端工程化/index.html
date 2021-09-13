@@ -27,10 +27,13 @@
     </script>
 
     <!-- ESM 是通过 CORS 的方式请求外部 JS 模块的 -->
-    <script type="module" src="https://lib.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script type="module" src="https://unpkg.com/jquery@3.4.1/dist/jquery.min.js"></script>
 
     <!-- ESM 的script 标签会延迟执行, -->
-    <script src="demo.js" type="module"></script>
+    <script src="demo.js" defer></script>
     <p>需要显示的内容</p>
+    
+    <script src="./b.js" type="module"></script>
+    <script src="./index.js" type="module"></script>
 </body>
 </html>
