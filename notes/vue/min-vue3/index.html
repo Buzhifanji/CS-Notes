@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script type="module">
+        import { reactive, effect } from './reactivity/index.js'
+
+        const product = reactive({
+            name: 'iphone',
+            price: 6000,
+            count: 3
+        })
+        let total = 0
+        effect(() => {
+            total = product.price * product.count
+        })
+        console.log(total)
+
+        product.price = 8000
+        console.log(total)
+
+        product.count = 10
+        console.log(total)
+    </script>
+</body>
+</html>
