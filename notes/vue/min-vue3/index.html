@@ -8,7 +8,7 @@
 </head>
 <body>
     <script type="module">
-        import { reactive, effect } from './reactivity/index.js'
+        import { reactive, effect, ref } from './reactivity/index.js'
 
         const product = reactive({
             name: 'iphone',
@@ -26,6 +26,20 @@
 
         product.count = 10
         console.log(total)
+
+        console.log('======== ref =========')
+        const price = ref(5000)
+        const count = ref(1)
+        let num = 0
+        effect(() => {
+            num = price.value * count.value
+        })
+
+        price.value = 6000
+        console.log(num)
+
+        count.value = 2
+        console.log(num)
     </script>
 </body>
 </html>
