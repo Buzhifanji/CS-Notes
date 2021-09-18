@@ -7,7 +7,6 @@ export function reactive(target) {
 
     const hander = {
         get(target, key, receiver) {
-            debugger
             // console.log('get', key)
             const result = convert(Reflect.get(target, key, receiver))
             if (result && activeEffect) {
@@ -46,7 +45,7 @@ export function effect(callback) {
 
 let targetMap = new WeakMap()
 export function track(target, key) {
-    debugger
+
     if (!activeEffect) return
 
     let depsMap = targetMap.get(target)
@@ -62,7 +61,7 @@ export function track(target, key) {
 }
 
 export function trigger(target, key) {
-    debugger
+
     const depsMap = targetMap.get(target)
 
     if (!depsMap) return
@@ -73,4 +72,45 @@ export function trigger(target, key) {
     dep.forEach(effect => {
         effect()
     })
+}
+
+export function ref(raw) {
+    if (isObject(raw) && raw._v_isRef) return
+    let value = convert(raw)
+    const result = {
+        _v_isRef: true,
+        get value() {
+            track(result, 'value')
+            return value
+        },
+        set value(newValue) {
+            if (newValue !== value) {
+                value = convert(newValue)
+                trigger(result, 'value')
+            }
+        }
+    }
+    return result
+}
+
+
+
+export function toRefs(proxy) {
+    const result = proxy instanceof Array ? new Array(proxy.length) : {}
+    for (const key in toProxyKeys) {
+        result[key] = toKeys(proxy, key)
+    }
+    return result
+}
+
+function toProxyKeys(proxy, key) {
+    const result = {
+        _v_isRef: true,
+        get value() {
+            return proxy[key]
+        },
+        set value() {
+            proxy[key] = newValue
+        }
+    }
 }
