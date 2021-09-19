@@ -54,18 +54,18 @@ export function toRaw(observed) {
 }
 
 // 创建响应式对象
-function createReactiveObject(target. proxyMap, baseHandlers) {
+function createReactiveObject(target, proxyMap, baseHandlers) {
     // 核心就是 proxy
     // 目的是可以侦听到用户 get 或者 set 的动作
-    const existingProxy = proxy.get(target)
-    
+    const existingProxy = proxyMap.get(target)
+
     // 如果命中的话就直接返回就好了
     // 使用缓存做的优化点
     if (existingProxy) {
         return existingProxy;
     }
 
-    const proxy new Proxy(target, baseHandlers)
+    const proxy = new Proxy(target, baseHandlers)
 
     // 缓存 proxy
     proxyMap.set(target, proxy)

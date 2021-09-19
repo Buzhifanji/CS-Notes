@@ -1,5 +1,5 @@
-import { trigger } from '.';
-import { isObject, hasOwn, extend } from '../shared/index';
+import { extend, hasOwn, isObject } from '../shared/index.js';
+import { trigger } from './effect.js';
 import { reactive, ReactiveFlags, reactiveMap, readonly, readonlyMap, shallowReaonlyMap } from './reactivity.js';
 
 const get = createGetter(); // 定义getter
@@ -9,8 +9,8 @@ const shallowReadonlyGet = createGetter(true, true)
 
 function createGetter(isReadonly = false, shallow = false) {
     return function get(target, key, receiver) {
-         // 判断 reactiveMap 是否存储了 响应式对象
-        const isExistInReactiveMap = (map) =>  key === ReactiveFlags.RAW && receiver === map.get(target);
+        // 判断 reactiveMap 是否存储了 响应式对象
+        const isExistInReactiveMap = (map) => key === ReactiveFlags.RAW && receiver === map.get(target);
         // // 判断 reactiveMap 是否存储了 响应式对象
         // const isExistInReactiveMap = () => key === ReactiveFlags.RAW && receiver === reactiveMap.get(target);
         // // 判断 readonlyMap 是否存储了 只读响应式对象
@@ -70,7 +70,7 @@ function deleteProperty(target, key) {
     // 对象自身属性中是否具有指定的属性
     const hasKey = hasOwn(target, key)
     const result = Reflect.deleteProperty(target, key)
-    if(result && hasKey) {
+    if (result && hasKey) {
         // 在触发 delete 的时候进行删除依赖
         trigger(target, 'delete', key)
     }
@@ -78,14 +78,14 @@ function deleteProperty(target, key) {
 }
 
 export const readonlyHandlers = {
-    get: reaonlyGet,
+    get: readonlyGet,
     set(target, key) {
         // readonly 的响应式对象不可以修改值
         console.warn(
             `Set operation on key "${String(key)}" failed: target is readonly.`,
-        target
-      );
-      return true;
+            target
+        );
+        return true;
     },
     deleteProperty(target, key) {
         console.warn(
@@ -97,10 +97,8 @@ export const readonlyHandlers = {
 }
 
 
-export const shallowReaonlyHandlers = extend(
-    {},
-    readonlyHandlers,
-    {
+export const shallowReaonlyHandlers = extend({},
+    readonlyHandlers, {
         get: shallowReadonlyGet,
     }
 )
