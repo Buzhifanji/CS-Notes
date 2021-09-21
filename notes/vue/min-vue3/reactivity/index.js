@@ -8,3 +8,5 @@ export {
     shallowReadonly
 }
 from './reactivity.js'
+
+export { ref } from './ref.js'

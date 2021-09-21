@@ -1,5 +1,5 @@
 import { extend, hasOwn, isObject } from '../shared/index.js';
-import { trigger } from './effect.js';
+import { track, trigger } from './effect.js';
 import { reactive, ReactiveFlags, reactiveMap, readonly, readonlyMap, shallowReaonlyMap } from './reactivity.js';
 
 const get = createGetter(); // 定义getter
@@ -9,6 +9,7 @@ const shallowReadonlyGet = createGetter(true, true)
 
 function createGetter(isReadonly = false, shallow = false) {
     return function get(target, key, receiver) {
+        debugger
         // 判断 reactiveMap 是否存储了 响应式对象
         const isExistInReactiveMap = (map) => key === ReactiveFlags.RAW && receiver === map.get(target);
         // // 判断 reactiveMap 是否存储了 响应式对象
@@ -57,7 +58,8 @@ function createGetter(isReadonly = false, shallow = false) {
 
 function createSetter() {
     return function set(target, key, value, receiver) {
-        const result = Relect.get(target, key, value, receiver)
+        debugger
+        const result = Reflect.set(target, key, value, receiver)
 
         // 在触发 set 的时候进行触发依赖
         trigger(target, 'set', key)

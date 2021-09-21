@@ -23,23 +23,26 @@ export class ReactiveEffect {
             return this.fn()
         }
 
-        if (!effectStack.includes(this)) {
-            // 把 this 赋值给 当前模块的 activeEffect
-            activeEffect = this
+        // 把 this 赋值给 当前模块的 activeEffect
+        activeEffect = this
+        // 可以开始收集依赖了
+        shoulTrack = true
+        // 执行用户传入的 fn
+        console.log("执行用户传入的 fn");
+        const result = this.fn()
+
+        // 重置
+        shoulTrack = false
+        activeEffect = undefined
+        return result
+        // if (!effectStack.includes(this)) {
+        
             // 并存储 当前 this到 effectStack
-            effectStack.push(activeEffect)
+            // effectStack.push(activeEffect)
             // 可以开始收集依赖了
-            enableTracking()
+            // enableTracking()
 
-            // 执行用户传入的 fn
-            console.log("执行用户传入的 fn");
-            const result = this.fn()
-
-            // 重置
-            shoulTrack = false
-            activeEffect = undefined
-            return result
-        }
+        // }
     }
     stop() {
         if (this.active) {
@@ -119,7 +122,7 @@ export function track(target, type, key) {
     let dep = depsMap.get(key)
     if (!dep) {
         dep = createDep()
-        dep.set(key, dep)
+        depsMap.set(key, dep)
     }
 
     // 追踪依赖 数据
@@ -149,7 +152,7 @@ export function trigger(target, type, key) {
     // 源码中 存在 多种类型,例如 clear add set 等等
     // 不同类型 需要把他们都取出来，存放到数组中，然后通过 set 去重
     // 目前只实现了一个 中 get 类型，省略了存放数组，转为set操作，因为 通过despMap.get(key) 拿到的就是一个set
-    trackEffects(createDep(dep))
+    triggerEffects(createDep(dep))
 }
 
 export function triggerEffects(dep) {
