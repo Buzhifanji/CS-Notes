@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue3-vuex</title>
+</head>
+<body>
+    <div id="app"></div>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://unpkg.com/vuex@next"></script>
+    <script type="module">
+        const Root = {
+            data() {
+                return {
+                    message: 'vue3-vuex'
+                }
+            },
+            template: `<h1>{{message}}</h1>`
+        }
+        console.log(Vue)
+
+        const { createApp } = Vue
+        import { install, Store} from './src/myStore/index.js'
+
+        createApp(Root).use(Vuex).use(install).mount('#app')
+    </script>
+</body>
+</html>
