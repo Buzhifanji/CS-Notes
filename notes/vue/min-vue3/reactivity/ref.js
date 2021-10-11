@@ -1,7 +1,7 @@
-import { reactive } from "./reactivity.js"
 import { isObject } from "../shared/index.js"
 import { createDep } from "./dep.js"
-import { isTracking, track, trackEffects, triggerEffects } from "./effect"
+import { isTracking, trackEffects, triggerEffects } from "./effect.js"
+import { reactive } from "./reactivity.js"
 
 class RefImpl {
     constructor(value) {
@@ -11,6 +11,7 @@ class RefImpl {
         this.dep = createDep()
     }
     get value() {
+        debugger
         // 收集依赖
         trackRefValue(this)
         return this._value
@@ -18,7 +19,7 @@ class RefImpl {
 
     set value(newValue) {
         // 当新值不等于旧值的时候
-        if(hasChange(newValue, this._rawValue)) {
+        if (hasChange(newValue, this._rawValue)) {
             // 更新值
             this._value = convert(newValue)
             this._rawValue = newValue;
@@ -37,7 +38,7 @@ function createRef(value) {
 }
 
 function convert(value) {
-    return isObject(value) ? reactive() : value
+    return isObject(value) ? reactive(value) : value
 }
 
 export function triggerRefValue(ref) {
@@ -45,7 +46,7 @@ export function triggerRefValue(ref) {
 }
 
 export function trackRefValue(ref) {
-    if(isTracking()) {
+    if (isTracking()) {
         trackEffects(ref.dep)
     }
 }
