@@ -1,0 +1,1 @@
+const { run } = require('./build')
