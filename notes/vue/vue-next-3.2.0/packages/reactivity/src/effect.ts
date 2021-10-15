@@ -1,6 +1,4 @@
-import { TrackOpTypes, TriggerOpTypes } from './operations'
 import { extend, isArray, isIntegerKey, isMap } from '@vue/shared'
-import { EffectScope, recordEffectScope } from './effectScope'
 import {
   createDep,
   Dep,
@@ -9,6 +7,8 @@ import {
   newTracked,
   wasTracked
 } from './dep'
+import { EffectScope, recordEffectScope } from './effectScope'
+import { TrackOpTypes, TriggerOpTypes } from './operations'
 
 // The main WeakMap that stores {target -> key -> dep} connections.
 // Conceptually, it's easier to think of a dependency as a Dep class
@@ -77,6 +77,7 @@ export class ReactiveEffect<T = any> {
     }
     if (!effectStack.includes(this)) {
       try {
+        //
         effectStack.push((activeEffect = this))
         enableTracking()
 
@@ -149,15 +150,18 @@ export function effect<T = any>(
   if ((fn as ReactiveEffectRunner).effect) {
     fn = (fn as ReactiveEffectRunner).effect.fn
   }
-
+  // 实例化 ReactiveEffect,并赋值给_effect,
   const _effect = new ReactiveEffect(fn)
   if (options) {
     extend(_effect, options)
     if (options.scope) recordEffectScope(_effect, options.scope)
   }
+  // 如果 用户 延迟执行
   if (!options || !options.lazy) {
     _effect.run()
   }
+
+  // 执行 run,并把run函数的中this指向给_effect
   const runner = _effect.run.bind(_effect) as ReactiveEffectRunner
   runner.effect = _effect
   return runner

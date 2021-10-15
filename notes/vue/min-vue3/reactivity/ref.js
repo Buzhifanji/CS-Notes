@@ -11,7 +11,6 @@ class RefImpl {
         this.dep = createDep()
     }
     get value() {
-        debugger
         // 收集依赖
         trackRefValue(this)
         return this._value

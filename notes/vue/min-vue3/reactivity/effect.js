@@ -18,29 +18,33 @@ export class ReactiveEffect {
     }
     run() {
         console.log('run')
+        debugger
+
         // 执行 fn  但是不收集依赖
         if (!this.active) {
             return this.fn()
         }
-
-        // 把 this 赋值给 当前模块的 activeEffect
-        activeEffect = this
-        // 可以开始收集依赖了
-        shoulTrack = true
-        // 执行用户传入的 fn
-        console.log("执行用户传入的 fn");
-        const result = this.fn()
-
-        // 重置
-        shoulTrack = false
-        activeEffect = undefined
-        return result
-        // if (!effectStack.includes(this)) {
-        
-            // 并存储 当前 this到 effectStack
-            // effectStack.push(activeEffect)
+        if (!effectStack.includes(this)) {
+            // 把 this 赋值给 当前模块的 activeEffect
+            activeEffect = this
             // 可以开始收集依赖了
-            // enableTracking()
+            shoulTrack = true
+            // 执行用户传入的 fn
+            console.log("执行用户传入的 fn");
+            const result = this.fn()
+
+            // 重置, 这一步很重要，因为清除后就可以下一次执行 run 的时候 activeEffect 就不会
+            shoulTrack = false
+            activeEffect = undefined
+            return result
+        }
+
+        // if (!effectStack.includes(this)) {
+
+        // 并存储 当前 this到 effectStack
+        // effectStack.push(activeEffect)
+        // 可以开始收集依赖了
+        // enableTracking()
 
         // }
     }
@@ -79,6 +83,8 @@ function cleanupEffect(effect) {
  * @returns
  */
 export function effect(fn, options) {
+    debugger
+
     const _effect = new ReactiveEffect(fn)
     // 把用户传过来的值合并到 _effect 对象上去
     if (options) {
