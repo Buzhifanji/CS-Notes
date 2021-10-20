@@ -11,15 +11,16 @@
     <template id="myapp">
         <h2>源码学习</h2>
     </template>
-    <script src="../../docs/"></script>
+    <script src="../../dist/vue.global.js"></script>
     <script >
         const {createApp } = Vue
         const vue_app = {
             template: '#myapp',
         }
+          debugger
         const app = createApp(vue_app)
-        
-        // debugger
+
+
         app.mount('#app')
         console.log(Vue)
         console.log(app)

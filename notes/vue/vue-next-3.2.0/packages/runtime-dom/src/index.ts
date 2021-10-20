@@ -1,21 +1,10 @@
 import {
-  createRenderer,
-  createHydrationRenderer,
-  warn,
-  RootRenderFunction,
-  CreateAppFunction,
-  Renderer,
-  HydrationRenderer,
-  App,
-  RootHydrateFunction,
-  isRuntimeOnly,
-  DeprecationTypes,
-  compatUtils
+  App, compatUtils, CreateAppFunction, createHydrationRenderer, createRenderer, DeprecationTypes, HydrationRenderer, isRuntimeOnly, Renderer, RootHydrateFunction, RootRenderFunction, warn
 } from '@vue/runtime-core'
+// Importing from the compiler, will be tree-shaken in prod
+import { extend, isFunction, isHTMLTag, isString, isSVGTag } from '@vue/shared'
 import { nodeOps } from './nodeOps'
 import { patchProp } from './patchProp'
-// Importing from the compiler, will be tree-shaken in prod
-import { isFunction, isString, isHTMLTag, isSVGTag, extend } from '@vue/shared'
 
 declare module '@vue/reactivity' {
   export interface RefUnwrapBailTypes {
@@ -57,6 +46,7 @@ export const hydrate = ((...args) => {
 }) as RootHydrateFunction
 
 export const createApp = ((...args) => {
+  debugger
   const app = ensureRenderer().createApp(...args)
 
   if (__DEV__) {
@@ -143,7 +133,7 @@ function injectCompilerOptionsCheck(app: App) {
       set() {
         warn(
           `The \`isCustomElement\` config option is deprecated. Use ` +
-            `\`compilerOptions.isCustomElement\` instead.`
+          `\`compilerOptions.isCustomElement\` instead.`
         )
       }
     })
@@ -196,35 +186,33 @@ function normalizeContainer(
 }
 
 // Custom element support
+// re-export everything from core
+// h, Component, reactivity API, nextTick, flags & types
+export * from '@vue/runtime-core'
 export {
   defineCustomElement,
   defineSSRCustomElement,
   VueElement,
   VueElementConstructor
 } from './apiCustomElement'
-
-// SFC CSS utilities
-export { useCssModule } from './helpers/useCssModule'
-export { useCssVars } from './helpers/useCssVars'
-
 // DOM-only components
 export { Transition, TransitionProps } from './components/Transition'
 export {
   TransitionGroup,
   TransitionGroupProps
 } from './components/TransitionGroup'
-
 // **Internal** DOM-only runtime directive helpers
 export {
-  vModelText,
-  vModelCheckbox,
-  vModelRadio,
-  vModelSelect,
-  vModelDynamic
+  vModelCheckbox, vModelDynamic, vModelRadio,
+  vModelSelect, vModelText
 } from './directives/vModel'
-export { withModifiers, withKeys } from './directives/vOn'
+export { withKeys, withModifiers } from './directives/vOn'
 export { vShow } from './directives/vShow'
+// SFC CSS utilities
+export { useCssModule } from './helpers/useCssModule'
+export { useCssVars } from './helpers/useCssVars'
 
-// re-export everything from core
-// h, Component, reactivity API, nextTick, flags & types
-export * from '@vue/runtime-core'
+
+
+
+
