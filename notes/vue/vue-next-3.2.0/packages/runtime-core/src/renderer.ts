@@ -1,19 +1,17 @@
 import {
-  Text,
-  Fragment,
-  Comment,
-  cloneIfMounted,
-  normalizeVNode,
-  VNode,
-  VNodeArrayChildren,
-  createVNode,
-  isSameVNodeType,
-  Static,
-  VNodeNormalizedRef,
-  VNodeHook,
-  VNodeNormalizedRefAtom,
-  VNodeProps
-} from './vnode'
+  isRef,
+  pauseTracking, ReactiveEffect, resetTracking
+} from '@vue/reactivity'
+import {
+  EMPTY_ARR, EMPTY_OBJ, getGlobalThis, hasOwn,
+  invokeArrayFns,
+  isArray, isFunction, isReservedProp, isString, NOOP, PatchFlags,
+  ShapeFlags
+} from '@vue/shared'
+import { isAsyncWrapper } from './apiAsyncComponent'
+import { createAppAPI, CreateAppFunction } from './apiCreateApp'
+import { DeprecationTypes, isCompatEnabled } from './compat/compatConfig'
+import { registerLegacyRef } from './compat/ref'
 import {
   ComponentInternalInstance,
   ComponentOptions,
@@ -22,71 +20,43 @@ import {
   getExposeProxy,
   setupComponent
 } from './component'
+import { updateProps } from './componentProps'
 import {
   filterSingleRoot,
   renderComponentRoot,
   shouldUpdateComponent,
   updateHOCHostEl
 } from './componentRenderUtils'
+import { isKeepAlive, KeepAliveContext } from './components/KeepAlive'
 import {
-  isString,
-  EMPTY_OBJ,
-  EMPTY_ARR,
-  isReservedProp,
-  isFunction,
-  PatchFlags,
-  ShapeFlags,
-  NOOP,
-  hasOwn,
-  invokeArrayFns,
-  isArray,
-  getGlobalThis
-} from '@vue/shared'
-import {
-  queueJob,
-  queuePostFlushCb,
-  flushPostFlushCbs,
-  invalidateJob,
-  flushPreFlushCbs,
-  SchedulerJob
-} from './scheduler'
-import {
-  isRef,
-  pauseTracking,
-  resetTracking,
-  ReactiveEffect
-} from '@vue/reactivity'
-import { updateProps } from './componentProps'
-import { updateSlots } from './componentSlots'
-import { pushWarningContext, popWarningContext, warn } from './warning'
-import { createAppAPI, CreateAppFunction } from './apiCreateApp'
-import {
-  SuspenseBoundary,
-  queueEffectWithSuspense,
-  SuspenseImpl
+  queueEffectWithSuspense, SuspenseBoundary, SuspenseImpl
 } from './components/Suspense'
 import { TeleportImpl, TeleportVNode } from './components/Teleport'
-import { isKeepAlive, KeepAliveContext } from './components/KeepAlive'
-import { registerHMR, unregisterHMR, isHmrUpdating } from './hmr'
-import {
-  ErrorCodes,
-  callWithErrorHandling,
-  callWithAsyncErrorHandling
-} from './errorHandling'
-import { createHydrationFunctions, RootHydrateFunction } from './hydration'
-import { invokeDirectiveHook } from './directives'
-import { startMeasure, endMeasure } from './profiling'
+import { updateSlots } from './componentSlots'
 import {
   devtoolsComponentAdded,
   devtoolsComponentRemoved,
   devtoolsComponentUpdated,
   setDevtoolsHook
 } from './devtools'
+import { invokeDirectiveHook } from './directives'
+import {
+  callWithAsyncErrorHandling, callWithErrorHandling, ErrorCodes
+} from './errorHandling'
 import { initFeatureFlags } from './featureFlags'
-import { isAsyncWrapper } from './apiAsyncComponent'
-import { isCompatEnabled } from './compat/compatConfig'
-import { DeprecationTypes } from './compat/compatConfig'
-import { registerLegacyRef } from './compat/ref'
+import { isHmrUpdating, registerHMR, unregisterHMR } from './hmr'
+import { createHydrationFunctions, RootHydrateFunction } from './hydration'
+import { endMeasure, startMeasure } from './profiling'
+import {
+  flushPostFlushCbs, flushPreFlushCbs, invalidateJob, queueJob,
+  queuePostFlushCb, SchedulerJob
+} from './scheduler'
+import {
+  cloneIfMounted, Comment, createVNode, Fragment, isSameVNodeType, normalizeVNode, Static, Text, VNode,
+  VNodeArrayChildren, VNodeHook, VNodeNormalizedRef, VNodeNormalizedRefAtom,
+  VNodeProps
+} from './vnode'
+import { popWarningContext, pushWarningContext, warn } from './warning'
 
 export interface Renderer<HostElement = RendererElement> {
   render: RootRenderFunction<HostElement>
@@ -106,7 +76,7 @@ export type RootRenderFunction<HostElement = RendererElement> = (
 export interface RendererOptions<
   HostNode = RendererNode,
   HostElement = RendererElement
-> {
+  > {
   patchProp(
     el: HostElement,
     key: string,
@@ -151,7 +121,7 @@ export interface RendererNode {
   [key: string]: any
 }
 
-export interface RendererElement extends RendererNode {}
+export interface RendererElement extends RendererNode { }
 
 // An object exposing the internals of a renderer, passed to tree-shakeable
 // features so that they can be decoupled from this file. Keys are shortened
@@ -159,7 +129,7 @@ export interface RendererElement extends RendererNode {}
 export interface RendererInternals<
   HostNode = RendererNode,
   HostElement = RendererElement
-> {
+  > {
   p: PatchFn
   um: UnmountFn
   r: RemoveFn
@@ -445,7 +415,7 @@ function baseCreateRenderer(
             optimized
           )
         } else if (shapeFlag & ShapeFlags.TELEPORT) {
-          ;(type as typeof TeleportImpl).process(
+          ; (type as typeof TeleportImpl).process(
             n1 as TeleportVNode,
             n2 as TeleportVNode,
             container,
@@ -458,7 +428,7 @@ function baseCreateRenderer(
             internals
           )
         } else if (__FEATURE_SUSPENSE__ && shapeFlag & ShapeFlags.SUSPENSE) {
-          ;(type as typeof SuspenseImpl).process(
+          ; (type as typeof SuspenseImpl).process(
             n1,
             n2,
             container,
@@ -544,13 +514,13 @@ function baseCreateRenderer(
       const anchor = hostNextSibling(n1.anchor!)
       // remove existing
       removeStaticNode(n1)
-      // insert new
-      ;[n2.el, n2.anchor] = hostInsertStaticContent!(
-        n2.children as string,
-        container,
-        anchor,
-        isSVG
-      )
+        // insert new
+        ;[n2.el, n2.anchor] = hostInsertStaticContent!(
+          n2.children as string,
+          container,
+          anchor,
+          isSVG
+        )
     } else {
       n2.el = n1.el
       n2.anchor = n1.anchor
@@ -977,19 +947,19 @@ function baseCreateRenderer(
         // oldVNode may be an errored async setup() component inside Suspense
         // which will not have a mounted element
         oldVNode.el &&
-        // - In the case of a Fragment, we need to provide the actual parent
-        // of the Fragment itself so it can move its children.
-        (oldVNode.type === Fragment ||
-          // - In the case of different nodes, there is going to be a replacement
-          // which also requires the correct parent container
-          !isSameVNodeType(oldVNode, newVNode) ||
-          // - In the case of a component, it could contain anything.
-          oldVNode.shapeFlag & ShapeFlags.COMPONENT ||
-          oldVNode.shapeFlag & ShapeFlags.TELEPORT)
+          // - In the case of a Fragment, we need to provide the actual parent
+          // of the Fragment itself so it can move its children.
+          (oldVNode.type === Fragment ||
+            // - In the case of different nodes, there is going to be a replacement
+            // which also requires the correct parent container
+            !isSameVNodeType(oldVNode, newVNode) ||
+            // - In the case of a component, it could contain anything.
+            oldVNode.shapeFlag & ShapeFlags.COMPONENT ||
+            oldVNode.shapeFlag & ShapeFlags.TELEPORT)
           ? hostParentNode(oldVNode.el)!
           : // In other cases, the parent container is not actually used so we
-            // just pass the block element here to avoid a DOM parentNode call.
-            fallbackContainer
+          // just pass the block element here to avoid a DOM parentNode call.
+          fallbackContainer
       patch(
         oldVNode,
         newVNode,
@@ -1169,7 +1139,7 @@ function baseCreateRenderer(
     n2.slotScopeIds = slotScopeIds
     if (n1 == null) {
       if (n2.shapeFlag & ShapeFlags.COMPONENT_KEPT_ALIVE) {
-        ;(parentComponent!.ctx as KeepAliveContext).activate(
+        ; (parentComponent!.ctx as KeepAliveContext).activate(
           n2,
           container,
           anchor,
@@ -1224,7 +1194,7 @@ function baseCreateRenderer(
 
     // inject renderer internals for keepAlive
     if (isKeepAlive(initialVNode)) {
-      ;(instance.ctx as KeepAliveContext).renderer = internals
+      ; (instance.ctx as KeepAliveContext).renderer = internals
     }
 
     // resolve props and slots for setup context
@@ -1361,7 +1331,7 @@ function baseCreateRenderer(
           }
 
           if (isAsyncWrapper(initialVNode)) {
-            ;(initialVNode.type as ComponentOptions).__asyncLoader!().then(
+            ; (initialVNode.type as ComponentOptions).__asyncLoader!().then(
               // note: we are moving the render call into an async callback,
               // which means it won't track dependencies - but it's ok because
               // a server-rendered async wrapper is already in resolved state
@@ -2010,7 +1980,7 @@ function baseCreateRenderer(
     }
 
     if (shapeFlag & ShapeFlags.TELEPORT) {
-      ;(type as typeof TeleportImpl).move(vnode, container, anchor, internals)
+      ; (type as typeof TeleportImpl).move(vnode, container, anchor, internals)
       return
     }
 
@@ -2081,7 +2051,7 @@ function baseCreateRenderer(
     }
 
     if (shapeFlag & ShapeFlags.COMPONENT_SHOULD_KEEP_ALIVE) {
-      ;(parentComponent!.ctx as KeepAliveContext).deactivate(vnode)
+      ; (parentComponent!.ctx as KeepAliveContext).deactivate(vnode)
       return
     }
 
@@ -2105,7 +2075,7 @@ function baseCreateRenderer(
       }
 
       if (shapeFlag & ShapeFlags.TELEPORT) {
-        ;(vnode.type as typeof TeleportImpl).remove(
+        ; (vnode.type as typeof TeleportImpl).remove(
           vnode,
           parentComponent,
           parentSuspense,
@@ -2370,7 +2340,7 @@ export function setRef(
   if (__DEV__ && !owner) {
     warn(
       `Missing ref owner context. ref cannot be used on hoisted vnodes. ` +
-        `A vnode with ref must be created inside the render function.`
+      `A vnode with ref must be created inside the render function.`
     )
     return
   }
@@ -2405,7 +2375,7 @@ export function setRef(
     // null values means this is unmount and it should not overwrite another
     // ref with the same key
     if (value) {
-      ;(doSet as SchedulerJob).id = -1
+      ; (doSet as SchedulerJob).id = -1
       queuePostRenderEffect(doSet, parentSuspense)
     } else {
       doSet()
@@ -2415,7 +2385,7 @@ export function setRef(
       ref.value = value
     }
     if (value) {
-      ;(doSet as SchedulerJob).id = -1
+      ; (doSet as SchedulerJob).id = -1
       queuePostRenderEffect(doSet, parentSuspense)
     } else {
       doSet()
