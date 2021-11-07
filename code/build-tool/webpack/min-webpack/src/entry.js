@@ -1,2 +1,4 @@
+import { age } from './age.js';
 import message from './message.js';
-console.log(message);
+
+console.log(message, age);

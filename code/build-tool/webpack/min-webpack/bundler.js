@@ -1,6 +1,5 @@
 const fs = require("fs");
 const path = require("path");
-const babylon = require("@babel/parser");
 const traverse = require("@babel/traverse").default;
 const babel = require("@babel/core");
 const { format } = require("path");
@@ -20,10 +19,10 @@ function createAsset(filename) {
     const dependencies = [];
     traverse(ast, {
         //找到有 import语法 的对应节点
-        ImportDeclaration: ({node}) => {
+        ImportDeclaration: ({ node }) => {
             // console.log(node)
             //把当前依赖的模块加入到数组中，其实这存的是字符串，
-            //例如 如果当前js文件 有一句 import message from './message.js'， 
+            //例如 如果当前js文件 有一句 import message from './message.js'，
             //'./message.js' === node.source.value
             dependencies.push(node.source.value)
         }
@@ -33,11 +32,11 @@ function createAsset(filename) {
     const id = ID++;
 
     //这边主要把ES6 的代码转成 ES5
-    const { code  } = babel.transformFromAstSync(ast, null, {
+    const { code } = babel.transformFromAstSync(ast, null, {
         presets: ["@babel/preset-env"]
     })
 
-    return {id, filename, dependencies, code }
+    return { id, filename, dependencies, code }
 }
 
 // 从入口开始分析所有依赖项，形成依赖图，采用广度遍历
@@ -47,7 +46,7 @@ function createGraph(entry) {
     //既然要广度遍历肯定要有一个队列，第一个元素肯定是 从 "./example/entry.js" 返回的信息
     const queue = [mainAsset];
 
-    for(const asset of queue) {
+    for (const asset of queue) {
         const dirname = path.dirname(asset.filename);
 
         //新增一个属性来保存子依赖项的数据
@@ -109,9 +108,13 @@ function bundle(graph) {
     return result
 }
 
-// test 
-const graph = createGraph('./src/entry.js')
+
+function handlePath(url) {
+    return path.join(__dirname, url)
+}
+// test
+const graph = createGraph(handlePath("./src/entry.js"))
 const ret = bundle(graph);
 
-// 打包生成文件
-fs.writeFileSync("./bundle.js", ret);
+// // 打包生成文件
+fs.writeFileSync(handlePath("./bundle.js"), ret);
