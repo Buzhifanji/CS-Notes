@@ -1,32 +1,18 @@
 import {
-  reactive,
-  readonly,
-  toRaw,
-  ReactiveFlags,
-  Target,
-  readonlyMap,
-  reactiveMap,
-  shallowReactiveMap,
-  shallowReadonlyMap
-} from './reactive'
-import { TrackOpTypes, TriggerOpTypes } from './operations'
+  extend, hasChanged, hasOwn, isArray,
+  isIntegerKey, isObject, isSymbol, makeMap
+} from '@vue/shared'
 import {
-  track,
-  trigger,
   ITERATE_KEY,
   pauseTracking,
-  resetTracking
+  resetTracking, track,
+  trigger
 } from './effect'
+import { TrackOpTypes, TriggerOpTypes } from './operations'
 import {
-  isObject,
-  hasOwn,
-  isSymbol,
-  hasChanged,
-  isArray,
-  isIntegerKey,
-  extend,
-  makeMap
-} from '@vue/shared'
+  reactive, ReactiveFlags, reactiveMap, readonly, readonlyMap, shallowReactiveMap,
+  shallowReadonlyMap, Target, toRaw
+} from './reactive'
 import { isRef } from './ref'
 
 const isNonTrackableKeys = /*#__PURE__*/ makeMap(`__proto__,__v_isRef,__isVue`)
@@ -46,39 +32,40 @@ const arrayInstrumentations = /*#__PURE__*/ createArrayInstrumentations()
 
 function createArrayInstrumentations() {
   const instrumentations: Record<string, Function> = {}
-  // instrument identity-sensitive Array methods to account for possible reactive
-  // values
-  ;(['includes', 'indexOf', 'lastIndexOf'] as const).forEach(key => {
-    instrumentations[key] = function (this: unknown[], ...args: unknown[]) {
-      const arr = toRaw(this) as any
-      for (let i = 0, l = this.length; i < l; i++) {
-        track(arr, TrackOpTypes.GET, i + '')
+    // instrument identity-sensitive Array methods to account for possible reactive
+    // values
+    ; (['includes', 'indexOf', 'lastIndexOf'] as const).forEach(key => {
+      instrumentations[key] = function (this: unknown[], ...args: unknown[]) {
+        const arr = toRaw(this) as any
+        for (let i = 0, l = this.length; i < l; i++) {
+          track(arr, TrackOpTypes.GET, i + '')
+        }
+        // we run the method using the original args first (which may be reactive)
+        const res = arr[key](...args)
+        if (res === -1 || res === false) {
+          // if that didn't work, run it again using raw values.
+          return arr[key](...args.map(toRaw))
+        } else {
+          return res
+        }
       }
-      // we run the method using the original args first (which may be reactive)
-      const res = arr[key](...args)
-      if (res === -1 || res === false) {
-        // if that didn't work, run it again using raw values.
-        return arr[key](...args.map(toRaw))
-      } else {
+    })
+    // instrument length-altering mutation methods to avoid length being tracked
+    // which leads to infinite loops in some cases (#2137)
+    ; (['push', 'pop', 'shift', 'unshift', 'splice'] as const).forEach(key => {
+      instrumentations[key] = function (this: unknown[], ...args: unknown[]) {
+        pauseTracking()
+        const res = (toRaw(this) as any)[key].apply(this, args)
+        resetTracking()
         return res
       }
-    }
-  })
-  // instrument length-altering mutation methods to avoid length being tracked
-  // which leads to infinite loops in some cases (#2137)
-  ;(['push', 'pop', 'shift', 'unshift', 'splice'] as const).forEach(key => {
-    instrumentations[key] = function (this: unknown[], ...args: unknown[]) {
-      pauseTracking()
-      const res = (toRaw(this) as any)[key].apply(this, args)
-      resetTracking()
-      return res
-    }
-  })
+    })
   return instrumentations
 }
 
 function createGetter(isReadonly = false, shallow = false) {
   return function get(target: Target, key: string | symbol, receiver: object) {
+    debugger
     if (key === ReactiveFlags.IS_REACTIVE) {
       return !isReadonly
     } else if (key === ReactiveFlags.IS_READONLY) {
@@ -86,14 +73,14 @@ function createGetter(isReadonly = false, shallow = false) {
     } else if (
       key === ReactiveFlags.RAW &&
       receiver ===
-        (isReadonly
-          ? shallow
-            ? shallowReadonlyMap
-            : readonlyMap
-          : shallow
+      (isReadonly
+        ? shallow
+          ? shallowReadonlyMap
+          : readonlyMap
+        : shallow
           ? shallowReactiveMap
           : reactiveMap
-        ).get(target)
+      ).get(target)
     ) {
       return target
     }
@@ -145,6 +132,7 @@ function createSetter(shallow = false) {
     value: unknown,
     receiver: object
   ): boolean {
+    debugger
     let oldValue = (target as any)[key]
     if (!shallow) {
       value = toRaw(value)

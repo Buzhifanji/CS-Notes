@@ -1514,12 +1514,27 @@ function baseCreateRenderer(
     }
 
     // create reactive effect for rendering
+    debugger
     const effect = new ReactiveEffect(
       componentUpdateFn,
       () => queueJob(instance.update),
       instance.scope // track it in component's effect scope
     )
+    //  实例化 的数据
+    // effect = {
+    //   active: true,
+    //   deps: [],
+    //   fn: componentUpdateFn, 对应的函数
+    //   scheduler: () => queueJob(instance.update)
+    // }
 
+    // effect.Prototype = {
+    // run: () => {},
+    // stop: () => {}
+    // }
+    
+    // 此处很重要 把 effect.run 的 this 更改 上面的 实例化 的 effect 对象
+    // 当执行 update 的时候，也就是 run 方法
     const update = (instance.update = effect.run.bind(effect) as SchedulerJob)
     update.id = instance.uid
     // allowRecurse
