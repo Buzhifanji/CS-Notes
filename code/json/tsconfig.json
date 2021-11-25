@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+        "types": ["node", "jest"],
+        "moduleResolution": "node"
+    },
+    "include": [
+        "src/**/*.ts",
+    ]
+}
