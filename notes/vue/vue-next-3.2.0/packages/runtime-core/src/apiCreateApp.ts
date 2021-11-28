@@ -182,7 +182,7 @@ export function createAppAPI<HostElement>(
       __DEV__ && warn(`root props passed to app.mount() must be an object.`)
       rootProps = null
     }
-
+    // 上下文
     const context = createAppContext()
     const installedPlugins = new Set()
 
@@ -197,7 +197,7 @@ export function createAppAPI<HostElement>(
       _instance: null,
 
       version,
-
+      // vue config配置属性
       get config() {
         return context.config
       },
@@ -210,6 +210,7 @@ export function createAppAPI<HostElement>(
         }
       },
 
+      // app.use 挂载插件
       use(plugin: Plugin, ...options: any[]) {
         if (installedPlugins.has(plugin)) {
           __DEV__ && warn(`Plugin has already been applied to target app.`)
@@ -228,6 +229,7 @@ export function createAppAPI<HostElement>(
         return app
       },
 
+      // 混入 mixin
       mixin(mixin: ComponentOptions) {
         if (__FEATURE_OPTIONS_API__) {
           if (!context.mixins.includes(mixin)) {
@@ -243,8 +245,9 @@ export function createAppAPI<HostElement>(
         }
         return app
       },
-
+      // 组件
       component(name: string, component?: Component): any {
+        debugger
         if (__DEV__) {
           validateComponentName(name, context.config)
         }
@@ -257,7 +260,7 @@ export function createAppAPI<HostElement>(
         context.components[name] = component
         return app
       },
-
+      // 指令
       directive(name: string, directive?: Directive) {
         if (__DEV__) {
           validateDirectiveName(name)
@@ -272,7 +275,7 @@ export function createAppAPI<HostElement>(
         context.directives[name] = directive
         return app
       },
-
+      // 挂载当前组件的方法
       mount(
         rootContainer: HostElement,
         isHydrate?: boolean,
@@ -319,7 +322,7 @@ export function createAppAPI<HostElement>(
           )
         }
       },
-
+      // 卸载当前组件的方法
       unmount() {
         if (isMounted) {
           render(null, app._container)
@@ -332,7 +335,7 @@ export function createAppAPI<HostElement>(
           warn(`Cannot unmount an app that is not mounted.`)
         }
       },
-
+      // 依赖注入
       provide(key, value) {
         if (__DEV__ && (key as string | symbol) in context.provides) {
           warn(

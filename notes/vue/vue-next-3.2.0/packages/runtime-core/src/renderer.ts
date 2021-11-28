@@ -301,12 +301,20 @@ function baseCreateRenderer(
 ): HydrationRenderer
 
 // implementation
+// 创建 渲染器
+
+// 这里用了 ts 的函数重载，同一个函数 实现不同的参数类型与执行结果
+// 通过 typeof 判断自定义的参数类型
+
 function baseCreateRenderer(
   options: RendererOptions,
   createHydrationFns?: typeof createHydrationFunctions
 ): any {
   // compile-time feature flags check
   if (__ESM_BUNDLER__ && !__TEST__) {
+    // 主要 处理 GlobalThis
+    // globalThis 提供了一个标准的方式来获取不同环境下的全局 this 对象
+    // 文档地址：https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/globalThis
     initFeatureFlags()
   }
 
@@ -316,6 +324,8 @@ function baseCreateRenderer(
     setDevtoolsHook(target.__VUE_DEVTOOLS_GLOBAL_HOOK__)
   }
 
+  // 操作 dom 方法
+  // 不同平台操作 DOM 方法是不一样的，所以此处传入 操作方法，只关注操作，不关注具体实现
   const {
     insert: hostInsert,
     remove: hostRemove,
@@ -1514,6 +1524,9 @@ function baseCreateRenderer(
     }
 
     // create reactive effect for rendering
+
+    // 组件在 render 的时候，会一个对应的 reactive effect
+    // 当数据变更的时候，effect 
     debugger
     const effect = new ReactiveEffect(
       componentUpdateFn,
@@ -1521,17 +1534,17 @@ function baseCreateRenderer(
       instance.scope // track it in component's effect scope
     )
     //  实例化 的数据
-    // effect = {
+    // const effect = {
     //   active: true,
     //   deps: [],
-    //   fn: componentUpdateFn, 对应的函数
-    //   scheduler: () => queueJob(instance.update)
+    //   fn: componentUpdateFn,
+    //   scheduler: : () => queueJob(instance.update),
+    //   __propt__: {
+    //     run: () => {},
+    //     stop: () => {}
+    //   }
     // }
 
-    // effect.Prototype = {
-    // run: () => {},
-    // stop: () => {}
-    // }
     
     // 此处很重要 把 effect.run 的 this 更改 上面的 实例化 的 effect 对象
     // 当执行 update 的时候，也就是 run 方法
@@ -2279,6 +2292,8 @@ function baseCreateRenderer(
     return hostNextSibling((vnode.anchor || vnode.el)!)
   }
 
+  // 渲染器 
+  //  如果有节点就更新 path 节点；如果没有节点就 unmount 节点
   const render: RootRenderFunction = (vnode, container, isSVG) => {
     if (vnode == null) {
       if (container._vnode) {
@@ -2287,21 +2302,24 @@ function baseCreateRenderer(
     } else {
       patch(container._vnode || null, vnode, container, null, null, null, isSVG)
     }
+    // debugger
+    // 任务 调度
     flushPostFlushCbs()
+    // 缓存 vnode 到_vnode 上
     container._vnode = vnode
   }
 
   const internals: RendererInternals = {
-    p: patch,
-    um: unmount,
-    m: move,
-    r: remove,
-    mt: mountComponent,
-    mc: mountChildren,
-    pc: patchChildren,
-    pbc: patchBlockChildren,
-    n: getNextHostNode,
-    o: options
+    p: patch, // 挂载/更新 VNode
+    um: unmount, // 卸载 VNode
+    m: move, // 移动 DOM
+    r: remove, // 移除 DOM
+    mt: mountComponent, // 挂载 组件
+    mc: mountChildren, // 挂载 子VNode
+    pc: patchChildren, // 挂载/更新 子VNode
+    pbc: patchBlockChildren, // 批量更新 子VNode
+    n: getNextHostNode, // 获取 下一个 HostNode
+    o: options // 操作 DOM 的方法
   }
 
   let hydrate: ReturnType<typeof createHydrationFunctions>[0] | undefined

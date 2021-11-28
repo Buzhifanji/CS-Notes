@@ -17,6 +17,7 @@
       const childComponent = {
         template: '<div>{{data.name}}</div> <globalComponent></globalComponent>',
         setup() {
+            debugger
           const data = reactive({
             name: '我是一个 child-component'
           })
@@ -35,6 +36,7 @@
         }
       }
 
+      // 根组件
       const App = {
         template: `
             <section>
@@ -62,6 +64,7 @@
       const app = createApp(App)
       debugger
       // 挂载全局组件
+      // 注意 挂载全局的时候，必须传入组件名和组件这两个参数
       app.component('globalComponent', globalComponent)
       app.mount('#app')
       console.log('app', app)

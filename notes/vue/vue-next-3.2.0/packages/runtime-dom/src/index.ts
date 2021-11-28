@@ -45,8 +45,14 @@ export const hydrate = ((...args) => {
   ensureHydrationRenderer().hydrate(...args)
 }) as RootHydrateFunction
 
+// createApp 执行的时候做了什么事情？ 
+// 先是延时创建 渲染器，如果 renderer 会被使用上，就会在不会被打包 (原理还有待继续深入)
+// 渲染器 主要做的事情：统一不同平台DOM的操作方法，然后卸载或者更新DOM（判断依据，vnode是否有值）
+
+// 然后是 调用 createApp 创建 当前组件的上下文数据,（上下文接口：AppContext）
+// 
 export const createApp = ((...args) => {
-  debugger
+
   const app = ensureRenderer().createApp(...args)
 
   if (__DEV__) {
@@ -90,7 +96,6 @@ export const createApp = ((...args) => {
     }
     return proxy
   }
-
   return app
 }) as CreateAppFunction<Element>
 
