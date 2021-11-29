@@ -21,7 +21,11 @@ export default {
 
 import { defineAsyncComponent, shallowRef } from 'vue';
 
+// 组件  是个js对象
+
 // 异步组件
+
+// 待回答的问题： 组件是如何编译的？ 组件是如何查找的，局部组件和全局组件？
 const components = {
     AsyncComponent: defineAsyncComponent(() => import('./asyncComponent.vue'))
 }
