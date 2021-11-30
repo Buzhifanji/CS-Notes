@@ -3,7 +3,8 @@
 <template>
     <h4>home</h4>
     <button @click="btnClick">click</button>
-    <component v-if="currentTabComponent" :is="currentTabComponent"></component>
+    <component :is="currentTabComponent"></component>
+    <component v-if="DynamicComponent" :is="DynamicComponent"></component>
 </template>
 
 <script>
@@ -18,8 +19,8 @@ export default {
 </script>
 
 <script setup>
-
-import { defineAsyncComponent, shallowRef } from 'vue';
+import { defineAsyncComponent, reactive, shallowRef } from 'vue';
+import DynamicComponent from './dynamicComponent.vue';
 
 // 组件  是个js对象
 
@@ -30,6 +31,10 @@ const components = {
     AsyncComponent: defineAsyncComponent(() => import('./asyncComponent.vue'))
 }
 
+const book = reactive({ title: 'Vue 3.2 reative 实现原理' })
+const arr = reactive([{ value: 1 }, { value: 2 }])
+console.log(book)
+console.log(arr)
 
 defineProps({
     msg: String
