@@ -1,8 +1,8 @@
-import { DebuggerOptions, ReactiveEffect } from './effect'
-import { Ref, trackRefValue, triggerRefValue } from './ref'
 import { isFunction, NOOP } from '@vue/shared'
-import { ReactiveFlags, toRaw } from './reactive'
 import { Dep } from './dep'
+import { DebuggerOptions, ReactiveEffect } from './effect'
+import { ReactiveFlags, toRaw } from './reactive'
+import { Ref, trackRefValue, triggerRefValue } from './ref'
 
 export interface ComputedRef<T = any> extends WritableComputedRef<T> {
   readonly value: T
@@ -35,7 +35,9 @@ class ComputedRefImpl<T> {
     private readonly _setter: ComputedSetter<T>,
     isReadonly: boolean
   ) {
+    debugger
     this.effect = new ReactiveEffect(getter, () => {
+      debugger
       if (!this._dirty) {
         this._dirty = true
         triggerRefValue(this)
@@ -45,6 +47,7 @@ class ComputedRefImpl<T> {
   }
 
   get value() {
+    debugger
     // the computed ref may get wrapped by other proxies e.g. readonly() #3376
     const self = toRaw(this)
     trackRefValue(self)
@@ -56,6 +59,7 @@ class ComputedRefImpl<T> {
   }
 
   set value(newValue: T) {
+    debugger
     this._setter(newValue)
   }
 }

@@ -1,0 +1,1 @@
+/Users/huangbin/Documents/my_project/CS-Notes/code/rust/rust-by-example/hello-rust/target/debug/hello-rust: /Users/huangbin/Documents/my_project/CS-Notes/code/rust/rust-by-example/hello-rust/src/main.rs
