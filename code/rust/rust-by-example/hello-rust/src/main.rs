@@ -1,6 +1,8 @@
 fn main() {
+    // Rust中所有以！结尾的调用都意味着你正在使用一个宏而不是普通函数
     println!("Hello, world!");
 
+    // Rust中所有以！结尾的调用都意味着你正在使用一个宏而不是普通函数
     println!("{} dats", 31);
 
     println!("{0}, this is {1}, this is {0}", "Alice", "Bob");
