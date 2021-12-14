@@ -36,6 +36,7 @@ class ComputedRefImpl<T> {
     isReadonly: boolean
   ) {
     this.effect = new ReactiveEffect(getter, () => {
+      debugger
       if (!this._dirty) {
         this._dirty = true
         triggerRefValue(this)
@@ -92,7 +93,7 @@ export function computed<T>(
     setter,
     isFunction(getterOrOptions) || !getterOrOptions.set
   )
-
+  debugger
   if (__DEV__ && debugOptions) {
     cRef.effect.onTrack = debugOptions.onTrack
     cRef.effect.onTrigger = debugOptions.onTrigger

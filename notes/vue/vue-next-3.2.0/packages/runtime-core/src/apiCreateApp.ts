@@ -246,11 +246,13 @@ export function createAppAPI<HostElement>(
         return app
       },
       // 组件
+      // 如果只是传入组件名，则是获取组件，如果组件名和组件一块传入了，则是把组件缓存到 context.components
       component(name: string, component?: Component): any {
         debugger
         if (__DEV__) {
           validateComponentName(name, context.config)
         }
+        // 获取组件
         if (!component) {
           return context.components[name]
         }
