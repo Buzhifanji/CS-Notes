@@ -1,9 +1,9 @@
-import { isTracking, trackEffects, triggerEffects } from './effect'
-import { TrackOpTypes, TriggerOpTypes } from './operations'
-import { isArray, isObject, hasChanged } from '@vue/shared'
-import { reactive, isProxy, toRaw, isReactive } from './reactive'
+import { hasChanged, isArray, isObject } from '@vue/shared'
 import { CollectionTypes } from './collectionHandlers'
 import { createDep, Dep } from './dep'
+import { isTracking, trackEffects, triggerEffects } from './effect'
+import { TrackOpTypes, TriggerOpTypes } from './operations'
+import { isProxy, isReactive, reactive, toRaw } from './reactive'
 
 export declare const RefSymbol: unique symbol
 
@@ -109,6 +109,7 @@ class RefImpl<T> {
   }
 
   set value(newVal) {
+    debugger
     newVal = this._shallow ? newVal : toRaw(newVal)
     if (hasChanged(newVal, this._rawValue)) {
       this._rawValue = newVal
