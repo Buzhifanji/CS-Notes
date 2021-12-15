@@ -47,17 +47,17 @@ jobs:
           # install dependencies
           npm install -g hexo-cli
           npm install
-      - name: Clone Blog Config
-        run: |
-          git clone git@github.com:kitety/blog_config.git tem
-          cp ./tem/Project.json Project.json
-      - name: Deploy
-        run: |
-          # publish my blog
-          sudo rm -rf .deploy_git
-          hexo clean
-          hexo generate
-          hexo deploy
+      # - name: Clone Blog Config
+      #   run: |
+      #     git clone git@github.com:kitety/blog_config.git tem
+      #     cp ./tem/Project.json Project.json
+      # - name: Deploy
+      #   run: |
+      #     # publish my blog
+      #     sudo rm -rf .deploy_git
+      #     hexo clean
+      #     hexo generate
+      #     hexo deploy
       - name: Wait for 5 seconds
         uses: jakejarvis/wait-action@master
         with:
