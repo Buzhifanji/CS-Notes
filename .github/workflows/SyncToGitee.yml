@@ -8,81 +8,14 @@ env:
 jobs:
   publish:
     runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v1
-
-      - name: Use Python 3.x
-        uses: actions/setup-python@v1
-        with:
-          python-version: "3.7"
-
-      - name: Use Node.js 10.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: "10.x"
-
-      - name: Setup
+      - uses: wearerequired/git-mirror-action@master
         env:
-          ACTION_DEPLOY_KEY: ${{ secrets.ACTION_DEPLOY_KEY }}
-          TZ: Asia/Shanghai
-        run: |
-          # set up private key for deploy
-          mkdir -p ~/.ssh/
-          echo "$ACTION_DEPLOY_KEY" | tr -d '\r' > ~/.ssh/id_rsa
-          echo "$BING_TOKEN" | tr -d '\r' > ~/.ssh/id_rsa_b
-          echo "$BAIDU_TOKEN" | tr -d '\r' > ~/.ssh/id_rsa_ba
-          cat ~/.ssh/id_rsa_b
-          cat ~/.ssh/id_rsa_ba
-          cat ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
-          # set git information
-          git config --global user.name 'buzhifanji' 
-          git config --global user.email 'buzhifanji@163.com
-          # prepare blog
-          #  pip install -r requirements.txt
-          #  python blog.py prepare
-          # install dependencies
-          npm install -g hexo-cli
-          npm install
-      # - name: Clone Blog Config
-      #   run: |
-      #     git clone git@github.com:kitety/blog_config.git tem
-      #     cp ./tem/Project.json Project.json
-      # - name: Deploy
-      #   run: |
-      #     # publish my blog
-      #     sudo rm -rf .deploy_git
-      #     hexo clean
-      #     hexo generate
-      #     hexo deploy
-      - name: Wait for 5 seconds
-        uses: jakejarvis/wait-action@master
+          SSH_PRIVATE_KEY: ${{ secrets.GITEE_PRIVATE_KEY }}
         with:
-          time: "5s"
-
-      - name: Sync to Gitee
-        uses: wearerequired/git-mirror-action@master
-        env:
-          # 注意在 Settings->Secrets 配置 GITEE_RSA_PRIVATE_KEY
-          SSH_PRIVATE_KEY: ${{ secrets.ACTION_DEPLOY_KEY }}
-        with:
-          # 注意替换为你的 GitHub 源仓库地址
           source-repo: "git@github.com:Buzhifanji/CS-Notes.git"
           # 注意替换为你的 Gitee 目标仓库地址
           destination-repo: "git@gitee.com:buzhifanji/CS-Notes.git"
 
-      # - name: Build Gitee Pages
-      #   uses: yanglbme/gitee-pages-action@master
-      #   with:
-      #     # 注意替换为你的 Gitee 用户名
-      #     gitee-username: kitety
-      #     # 注意在 Settings->Secrets 配置 GITEE_PASSWORD
-      #     gitee-password: ${{ secrets.GITEE_PASSWORD }}
-      #     # 注意替换为你的 Gitee 仓库
-      #     gitee-repo: kitety/kitety
 
 # jobs:
 #   build:
