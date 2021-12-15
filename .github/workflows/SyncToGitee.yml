@@ -39,8 +39,8 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan github.com >> ~/.ssh/known_hosts
           # set git information
-          git config --global user.name 'kitety' 
-          git config --global user.email 'aizaizuori@foxmail.com'
+          git config --global user.name 'buzhifanji' 
+          git config --global user.email 'buzhifanji@163.com
           # prepare blog
           #  pip install -r requirements.txt
           #  python blog.py prepare
