@@ -151,6 +151,10 @@ export default class LinkedList {
 
         return deleteTail
     }
+    /**
+     * 删除头部节点
+     * @return {LinkedListNode}
+     */
     deleteHead() {
         if (!this.head) {
             return null
@@ -194,20 +198,17 @@ export default class LinkedList {
         return nodes
     }
     toString(callback) {
-        return this.toArray().map(node => node.toString(callback).toString())
+        return this.toArray().reduce((accur, node) => {
+            // 第一个 是空字符串，不需要添加逗号
+            const isComman = accur ? ',' : ''
+            return accur + isComman + node.toString(callback).toString()
+        }, '')
     }
     // https://zhuanlan.zhihu.com/p/106050123
-    reverson() {
+    reverse() {
         let currentNode = this.head
         let prevNode = null
         let nextNode = null
-        // 1 -> 2 -> 3 -> 4
-        // nextNode 2 -> 3 -> 4
-        // prevNode 1
-        //
-        // nextNode 3 -> 4
-        // prevNode
-        //
         while (currentNode) {
             // 获取当前节点的下一个节点
             nextNode = currentNode.next
