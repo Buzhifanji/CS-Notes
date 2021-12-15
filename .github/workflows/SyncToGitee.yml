@@ -1,25 +1,104 @@
 name: Sync Github Repos To Gitee
 
-on:
-  push:
-    branches:
-      - main
+on: [push]
+env:
+  BAIDU_TOKEN: ${{ secrets.BAIDU_TOKEN }} # 注意这里，其他的都是浮云
+  BING_TOKEN: ${{ secrets.BING_TOKEN }} # 注意这里，其他的都是浮云
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
-    steps:
 
-    - name: Sync Github Repos To Gitee  # 名字随便起
-      uses: wearerequired/git-mirror-action@master  # 使用Yikun/hub-mirror-action
-      with:
-        src: github/Buzhifanji  # 源端账户名(github)
-        dst: gitee/buzhifanji  # 目的端账户名(gitee)
-        dst_key: ${{ secrets.GITEE_PRIVATE_KEY }}  # SSH密钥对中的私钥
-        dst_token:  ${{ secrets.GITEE_TOKEN }}  # Gitee账户的私人令牌
-        account_type: user  # 账户类型
-        clone_style: "https"  # 使用https方式进行clone，也可以使用ssh
-        debug: true  # 启用后会显示所有执行命令
-        force_update: true  # 启用后，强制同步，即强制覆盖目的端仓库
-        static_list: "CS-Notes"  # 静态同步列表，在此填写需要同步的仓库名称，可填写多个
-        timeout: '600s'  # git超时设置，超时后会自动重试git操作
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Use Python 3.x
+        uses: actions/setup-python@v1
+        with:
+          python-version: "3.7"
+
+      - name: Use Node.js 10.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: "10.x"
+
+      - name: Setup
+        env:
+          ACTION_DEPLOY_KEY: ${{ secrets.ACTION_DEPLOY_KEY }}
+          TZ: Asia/Shanghai
+        run: |
+          # set up private key for deploy
+          mkdir -p ~/.ssh/
+          echo "$ACTION_DEPLOY_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+          echo "$BING_TOKEN" | tr -d '\r' > ~/.ssh/id_rsa_b
+          echo "$BAIDU_TOKEN" | tr -d '\r' > ~/.ssh/id_rsa_ba
+          cat ~/.ssh/id_rsa_b
+          cat ~/.ssh/id_rsa_ba
+          cat ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          # set git information
+          git config --global user.name 'kitety' 
+          git config --global user.email 'aizaizuori@foxmail.com'
+          # prepare blog
+          #  pip install -r requirements.txt
+          #  python blog.py prepare
+          # install dependencies
+          npm install -g hexo-cli
+          npm install
+      - name: Clone Blog Config
+        run: |
+          git clone git@github.com:kitety/blog_config.git tem
+          cp ./tem/Project.json Project.json
+      - name: Deploy
+        run: |
+          # publish my blog
+          sudo rm -rf .deploy_git
+          hexo clean
+          hexo generate
+          hexo deploy
+      - name: Wait for 5 seconds
+        uses: jakejarvis/wait-action@master
+        with:
+          time: "5s"
+
+      - name: Sync to Gitee
+        uses: wearerequired/git-mirror-action@master
+        env:
+          # 注意在 Settings->Secrets 配置 GITEE_RSA_PRIVATE_KEY
+          SSH_PRIVATE_KEY: ${{ secrets.ACTION_DEPLOY_KEY }}
+        with:
+          # 注意替换为你的 GitHub 源仓库地址
+          source-repo: "git@github.com:Buzhifanji/CS-Notes.git"
+          # 注意替换为你的 Gitee 目标仓库地址
+          destination-repo: "git@gitee.com:buzhifanji/CS-Notes.git"
+
+      # - name: Build Gitee Pages
+      #   uses: yanglbme/gitee-pages-action@master
+      #   with:
+      #     # 注意替换为你的 Gitee 用户名
+      #     gitee-username: kitety
+      #     # 注意在 Settings->Secrets 配置 GITEE_PASSWORD
+      #     gitee-password: ${{ secrets.GITEE_PASSWORD }}
+      #     # 注意替换为你的 Gitee 仓库
+      #     gitee-repo: kitety/kitety
+
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+#     steps:
+
+#     - name: Sync Github Repos To Gitee  # 名字随便起
+#       uses: wearerequired/git-mirror-action@master  # 使用Yikun/hub-mirror-action
+#       with:
+#         src: github/Buzhifanji  # 源端账户名(github)
+#         dst: gitee/buzhifanji  # 目的端账户名(gitee)
+#         dst_key: ${{ secrets.GITEE_PRIVATE_KEY }}  # SSH密钥对中的私钥
+#         dst_token:  ${{ secrets.GITEE_TOKEN }}  # Gitee账户的私人令牌
+#         account_type: user  # 账户类型
+#         clone_style: "https"  # 使用https方式进行clone，也可以使用ssh
+#         debug: true  # 启用后会显示所有执行命令
+#         force_update: true  # 启用后，强制同步，即强制覆盖目的端仓库
+#         static_list: "CS-Notes"  # 静态同步列表，在此填写需要同步的仓库名称，可填写多个
+#         timeout: '600s'  # git超时设置，超时后会自动重试git操作
