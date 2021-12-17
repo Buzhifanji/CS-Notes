@@ -72,7 +72,7 @@ export default class DoublyLinkedList {
         let currentNode = this.head
 
         while (currentNode) {
-            if (this.compare(currentNode.value, value)) {
+            if (this.compare.equal(currentNode.value, value)) {
                 deleteNode = currentNode
 
                 if (deleteNode === this.head) {
@@ -96,7 +96,7 @@ export default class DoublyLinkedList {
                 } else {
                     // 删除中间节点
                     const previousNode = deleteNode.previous
-                    const nextNode = deleteNode.newNode
+                    const nextNode = deleteNode.next
 
                     previousNode.next = nextNode
                     nextNode.previous = previousNode
@@ -126,7 +126,7 @@ export default class DoublyLinkedList {
                 return currentNode
             }
 
-            if (value !== undefined && this.compare(currentNode.value, value)) {
+            if (value !== undefined && this.compare.equal(currentNode.value, value)) {
                 return currentNode
             }
 
@@ -225,8 +225,8 @@ export default class DoublyLinkedList {
             nextNode = currentNode.next
             previousNode = currentNode.previous
 
-            currentNode.previous = previousNode
-            currentNode.next = nextNode
+            currentNode.previous = nextNode
+            currentNode.next = previousNode
 
             previousNode = currentNode
             currentNode = nextNode
@@ -235,6 +235,6 @@ export default class DoublyLinkedList {
         this.tail = this.head
         this.head = previousNode
 
-        return this
+        return this.head
     }
 }
