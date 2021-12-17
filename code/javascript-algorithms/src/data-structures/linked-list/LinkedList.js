@@ -205,7 +205,7 @@ export default class LinkedList {
         return this.toArray().reduce((accur, node) => {
             // 第一个 是空字符串，不需要添加逗号
             const isComman = accur ? ',' : ''
-            return accur + isComman + node.toString(callback).toString()
+            return accur + isComman + node.toString(callback)
         }, '')
     }
     // https://zhuanlan.zhihu.com/p/106050123
@@ -214,6 +214,8 @@ export default class LinkedList {
         let prevNode = null
         let nextNode = null
         while (currentNode) {
+            // 1 -> 2 -> 3
+            // 2 -> 3
             // 获取当前节点的下一个节点
             nextNode = currentNode.next
             // 当前节点的前一个节点指向上一个节点
