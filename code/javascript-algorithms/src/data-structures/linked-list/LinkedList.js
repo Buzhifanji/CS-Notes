@@ -51,7 +51,11 @@ export default class LinkedList {
 
         return this
     }
-
+    /**
+     * 删除指定值
+     * @param {*} value
+     * @returns
+     */
     delete(value) {
         if (!this.head) {
             return null
