@@ -17,7 +17,7 @@ export default class Stack {
      * 栈 的第一个元素
      * @return {*}
      */
-    peep() {
+    peek() {
         if (this.isEmpty()) {
             return null
         }
@@ -51,6 +51,6 @@ export default class Stack {
      * @return {string}
      */
     toString(callback) {
-        reutn this.linkedList.toString(callback)
+        return this.linkedList.toString(callback)
     }
 }
