@@ -1,23 +1,23 @@
 import LinkedList from '../linked-list/LinkedList';
 
-export default class Queue {
+export default class Stack {
     constructor() {
-        // 通过链表来实现队列
-        // 出入队列的时间复杂度都是 O(1)
+        // 基于列表实现 栈 
+        // 出入栈的时间复杂度都是 O(1)
         this.linkedList = new LinkedList()
     }
     /**
-     * 判断队列是否为空
+     * 栈 是否为空
      * @return {boolean}
      */
     isEmpty() {
         return !this.linkedList.head
     }
     /**
-     * 读取队列中第一个元素.
+     * 栈 的第一个元素
      * @return {*}
      */
-    peek() {
+    peep() {
         if (this.isEmpty()) {
             return null
         }
@@ -25,25 +25,32 @@ export default class Queue {
         return this.linkedList.head.value
     }
     /**
-     * 向队列添加一个元素（链表末尾添加一个元素）
-     * @param {*} value 
+     * 入栈
+     * @param {*} value
      */
-    enqueue(value) {
-        this.linkedList.append(value)
+    push(value) {
+        this.linkedList.prepend(value)
     }
     /**
-     * 移除队列中的一个元素
-     * @returns {*}
+     * 出栈
+     * @return {*}
      */
-    dequeue() {
+    pop() {
         const removeHead = this.linkedList.deleteHead()
         return removeHead ? removeHead.value : null
+    }
+    /**
+     * 栈 转换成数组
+     * @return {*[]}
+     */
+    toArray() {
+        return this.linkedList.toArray().map(linkedList => linkedList.value)
     }
     /**
      * @param {function} [callback]
      * @return {string}
      */
     toString(callback) {
-        return this.linkedList.toString(callback)
+        reutn this.linkedList.toString(callback)
     }
 }
