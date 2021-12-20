@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <user-card image="https://semantic-ui.com/images/avatar2/large/kristy.png" name="Users Name" email="yourmail@some-email.com"></user-card>
+    <template id="userCardTemplate">
+        <style>
+            :host {
+                display: flex;
+                align-items: center;
+                width: 450px;
+                height: 180px;
+                background-color: #d4d4d4;
+                border: 1px solid #d5d5d5;
+                box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
+                border-radius: 3px;
+                overflow: hidden;
+                padding: 10px;
+                box-sizing: border-box;
+                font-family: &#39;
+                Poppins&#39;
+                ,
+                sans-serif;
+            }
+
+            .image {
+                flex: 0 0 auto;
+                width: 160px;
+                height: 160px;
+                vertical-align: middle;
+                border-radius: 5px;
+            }
+
+            .container {
+                box-sizing: border-box;
+                padding: 20px;
+                height: 160px;
+            }
+
+            .container &gt;
+
+            .name {
+                font-size: 20px;
+                font-weight: 600;
+                line-height: 1;
+                margin: 0;
+                margin-bottom: 5px;
+            }
+
+            .container &gt;
+
+            .email {
+                font-size: 12px;
+                opacity: 0.75;
+                line-height: 1;
+                margin: 0;
+                margin-bottom: 15px;
+            }
+
+            .container &gt;
+
+            .button {
+                padding: 10px 25px;
+                font-size: 12px;
+                border-radius: 5px;
+                text-transform: uppercase;
+            }
+        </style>
+
+        <img class="image">
+        <div class="container">
+            <p class="name"></p>
+            <p class="email"></p>
+            <button class="button">Follow John</button>
+        </div>
+    </template>
+    <script async>
+        class UserCard extends HTMLElement {
+            constructor() {
+                super();
+                var shadow = this.attachShadow({ mode: 'closed' });
+
+                var templateElem = document.getElementById('userCardTemplate');
+                var content = templateElem.content.cloneNode(true);
+                content.querySelector('img').setAttribute('src', this.getAttribute('image'));
+                content.querySelector('.container>.name').innerText = this.getAttribute('name');
+                content.querySelector('.container>.email').innerText = this.getAttribute('email');
+
+                shadow.appendChild(content);
+            }
+        }
+        window.customElements.define('user-card', UserCard);
+    </script>
+    <div>
+        <my-image id="test" src="https://semantic-ui.com/images/avatar2/large/kristy.png" fit="fill"></my-image>
+        <my-button>按钮</my-button>
+        <my-button>按钮</my-button>
+        <!-- <my-image src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg" fit="contain"></my-image>
+        <my-image src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg" fit="cover"></my-image>
+        <my-image src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"></my-image>
+        <my-image src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg" fit="scale-down"></my-image> -->
+    </div>
+    <script defer>
+        // let imgUrl = 'https://semantic-ui.com/images/avatar2/large/kristy.png'
+        const element = document.getElementById('test')
+        setTimeout(() => {
+            element.setAttribute('src', 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg')
+            // element.setAttribute('fit', 'cover')
+        }, 1500)
+    </script>
+
+    <script src="./src/image/image.js" defer></script>
+    <script src="./src/button/button.js" type="module"></script>
+
+</body>
+
+</html>
