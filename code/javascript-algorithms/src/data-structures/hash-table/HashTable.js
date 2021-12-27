@@ -9,11 +9,17 @@ export default class HashTable {
 
         this.keys = {}
     }
+    /**
+     * 字符串转换成hash值
+     * @param {*} key
+     * @returns
+     */
     hash(key) {
         const hash = Array.from(key).reduce(
+            // charCodeAt() 方法返回 0 到 65535 之间的整数，表示给定索引处的 UTF-16 代码单元
             (hashAccumulator, keySymbol) => (hashAccumulator + keySymbol.charCodeAt(0)), 0
         )
-
+        // % 取余
         return hash % this.buckets.length
     }
     set(key, value) {
@@ -29,7 +35,7 @@ export default class HashTable {
         }
     }
     delete(key) {
-        const keyHash = this.hash[key]
+        const keyHash = this.hash(key)
         delete this.keys[key]
         const bucketLinkedList = this.buckets[keyHash]
         const node = bucketLinkedList.find({ callback: (nodeValue) => nodeValue.key === key })
@@ -54,7 +60,7 @@ export default class HashTable {
     getKeys() {
         return Object.keys(this.keys)
     }
-    getValue() {
+    getValues() {
         return this.buckets.reduce((values, bucket) => {
             const bucketValues = bucket.toArray().map(linkedListNode => linkedListNode.value.value)
             return values.concat(bucketValues)
