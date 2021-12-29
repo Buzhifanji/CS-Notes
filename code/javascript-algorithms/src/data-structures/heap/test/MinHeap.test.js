@@ -42,4 +42,22 @@ describe('MinHeap', () => {
         expect(minHeap.poll()).toBe(3)
         expect(minHeap.toString()).toBe('5,10')
     })
+    it('should poll items from the heap and heapify it down', () => {
+        const minHeap = new MinHeap()
+
+        minHeap.add(5) // 5
+        minHeap.add(3) // 3,5
+        minHeap.add(10) // 3, 5, 10
+        minHeap.add(11) // 3, 5, 10, 11
+        minHeap.add(1) // 1,3,10,11,5
+
+
+        expect(minHeap.toString()).toBe('1,3,10,11,5')
+
+        expect(minHeap.poll()).toBe(1) // 5,3,10,11 => 3,5,10,11
+        expect(minHeap.toString()).toBe('3,5,10,11')
+
+        expect(minHeap.poll()).toBe(3) // 11,5,10
+        // expect(minHeap.toString()).toBe('10,5,11')
+    })
 })
