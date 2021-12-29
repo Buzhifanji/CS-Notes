@@ -1,5 +1,12 @@
 import Comparator from "../../utils/comparator/Comparator";
 
+/**** ================= 堆 =================== */
+/**
+ * 基础知识：堆是一个完全的二叉树
+ * 若设二叉树的高度为h，除第 h 层外，其它各层 (1～h-1) 的结点数都达到最大个数，第h层有叶子结点，并且叶子结点都是从左到右依次排布，这就是完全二叉树
+ *
+ * 一维数组可以作为完全二叉树的存储结构，堆排序使用的数据结构就是完全二叉树
+ */
 export default class Heap {
     constructor(comparatorFunction) {
         if (new.target === Heap) {
@@ -26,11 +33,16 @@ export default class Heap {
         return (2 * parentIndex) + 2
     }
     /**
-     *
+     * 获取父节点的索引
+     * 此处需要重点理解
+     * 依据：二叉树里的每个节点最多有两个子节点
      * @param {number} childIndex
      * @returns {number}
      */
     getParentIndex(childIndex) {
+        // Math.floor(4.5)  => 4
+        // Math.floor(0)    => 0
+        // Math.floor(-1.1) => -2
         return Math.floor((childIndex - 1) / 2)
     }
     /**
@@ -129,6 +141,7 @@ export default class Heap {
      */
     add(item) {
         this.heapContainer.push(item)
+        // 调整父子节点顺序
         this.heapifyUp()
         return this
     }
@@ -154,6 +167,7 @@ export default class Heap {
                 if (this.hasLeftChild(indexToRemove) && !parentItem || this.pairIsInCorrectOrder(parentItem, this.heapContainer[indexToRemove])) {
                     this.heapifyDown(indexToRemove)
                 } else {
+                    // 调整父子节点顺序
                     this.heapifyUp(indexToRemove)
                 }
             }
@@ -193,13 +207,18 @@ export default class Heap {
         return this.heapContainer.toString()
     }
     /**
-     *
+     * 调整父子大小排序
+     * 时间复杂度：O(N log N)
      * @param {number} [customStartIndex]
      */
     heapifyUp(customStartIndex) {
+        // 数据大小不知，所以从尾部开始处理
         let currentIndex = customStartIndex || this.heapContainer.length - 1
+        // 有父节点，并且满足对比条件
         while (this.hasParent(currentIndex) && !this.pairIsInCorrectOrder(this.parent(currentIndex), this.heapContainer[currentIndex])) {
+            // 调换位置里的内容
             this.swap(currentIndex, this.getParentIndex(currentIndex))
+            // 把父节点的索引赋值给currentIndex，继续处理父节点的排序，直到没有父节点停止
             currentIndex = this.getParentIndex(currentIndex)
         }
     }
