@@ -17,16 +17,16 @@ export default class Heap {
         this.compare = new Comparator(comparatorFunction)
     }
     /**
-     *
-     * @param {number} parentIndex
+     * 获取左节点索引
+     * @param {number} parentIndex 父节点索引
      * @returns {number}
      */
     getLeftChildIndex(parentIndex) {
         return (2 * parentIndex) + 1
     }
     /**
-     *
-     * @param {number} parentIndex
+     * 获取又节点索引
+     * @param {number} parentIndex 父节点索引
      * @returns {number}
      */
     getRightChildIndex(parentIndex) {
@@ -36,7 +36,7 @@ export default class Heap {
      * 获取父节点的索引
      * 此处需要重点理解
      * 依据：二叉树里的每个节点最多有两个子节点
-     * @param {number} childIndex
+     * @param {number} childIndex 子节点索引
      * @returns {number}
      */
     getParentIndex(childIndex) {
@@ -46,48 +46,48 @@ export default class Heap {
         return Math.floor((childIndex - 1) / 2)
     }
     /**
-     *
-     * @param {number} childIndex
+     * 是否有父节点
+     * @param {number} childIndex 子节点索引
      * @returns {number}
      */
     hasParent(childIndex) {
         return this.getParentIndex(childIndex) >= 0
     }
     /**
-     *
-     * @param {number} parentIndex
+     *  是否有左子节点
+     * @param {number} parentIndex 父节点索引
      * @returns {number}
      */
     hasLeftChild(parentIndex) {
         return this.getLeftChildIndex(parentIndex) < this.heapContainer.length
     }
     /**
-     *
-     * @param {number} parentIndex
+     * 是否有右子节点
+     * @param {number} parentIndex 父节点索引
      * @returns {number}
      */
     hasRightChild(parentIndex) {
         return this.getRightChildIndex(parentIndex) < this.heapContainer.length
     }
     /**
-     *
-     * @param {number} parentIndex
+     * 获取左子节点
+     * @param {number} parentIndex 父节点索引
      * @returns {*}
      */
     leftChild(parentIndex) {
         return this.heapContainer[this.getLeftChildIndex(parentIndex)]
     }
     /**
-     *
-     * @param {number} parentIndex
+     * 获取右子节点
+     * @param {number} parentIndex 父节点索引
      * @returns {*}
      */
     rightChild(parentIndex) {
         return this.heapContainer[this.getRightChildIndex(parentIndex)]
     }
     /**
-     *
-     * @param {number} childIndex
+     *  获取父节点
+     * @param {number} childIndex 子节点索引
      * @returns {*}
      */
     parent(childIndex) {
@@ -104,7 +104,7 @@ export default class Heap {
         this.heapContainer[indexOne] = temp
     }
     /**
-     *
+     * 获取 堆 的第一个元素
      * @returns {*}
      */
     peek() {
@@ -115,7 +115,7 @@ export default class Heap {
         return this.heapContainer[0]
     }
     /**
-     *
+     * 移除 堆 第一个元素
      * @returns {*}
      */
     poll() {
@@ -207,7 +207,7 @@ export default class Heap {
         return this.heapContainer.toString()
     }
     /**
-     * 调整父子大小排序
+     * 调整父子大小排序（从节点底部开始，向上调整）
      * 时间复杂度：O(N log N)
      * @param {number} [customStartIndex]
      */
@@ -223,14 +223,16 @@ export default class Heap {
         }
     }
     /**
-     *
+     * 调整父子大小排序（默认从节点头部开始，向下调整）
      * @param {number} [customStartIndex]
      */
     heapifyDown(customStartIndex = 0) {
         let currentIndex = customStartIndex
         let nextIndex = null
-
+        // 完全二叉树：当有一个子节点的时候，一定是左子节点
         while (this.hasLeftChild(currentIndex)) {
+
+            // 左右两子节点 对比
             if (this.hasRightChild(currentIndex) && this.pairIsInCorrectOrder(this.rightChild(currentIndex), this.leftChild(currentIndex))) {
                 nextIndex = this.getRightChildIndex(currentIndex)
             } else {
